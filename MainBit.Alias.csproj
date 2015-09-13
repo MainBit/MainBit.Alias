@@ -69,11 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets.json" />
-    <Content Include="Assets\Styles.less" />
-    <Content Include="Styles\Styles.css" />
-    <Content Include="Styles\Styles.min.css" />
     <Content Include="Web.config" />
-    <Content Include="Styles\Web.config" />
     <Content Include="Properties\AssemblyInfo.cs" />
     <Content Include="Module.txt" />
   </ItemGroup>
@@ -110,15 +106,13 @@
     <Compile Include="Models\BaseUrlTemplateRecord.cs" />
     <Compile Include="Services\IBaseUrlManager.cs" />
     <Compile Include="Services\IBaseUrlSegmentProvider.cs" />
-    <Compile Include="Styles\IBaseUrlTemplateService.cs" />
+    <Compile Include="Services\IBaseUrlTemplateService.cs" />
     <Compile Include="ViewModels\IndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\BaseUrlAdmin\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Url\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Views\BaseUrlAdmin\Add.cshtml" />
   </ItemGroup>
