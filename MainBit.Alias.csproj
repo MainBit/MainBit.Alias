@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -57,6 +57,7 @@
     <Reference Include="System.Web.Mvc, Version=5.2.3, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\lib\aspnetmvc\System.Web.Mvc.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -72,17 +73,9 @@
     <Content Include="Styles\Styles.css" />
     <Content Include="Styles\Styles.min.css" />
     <Content Include="Web.config" />
-    <Content Include="Scripts\Web.config" />
     <Content Include="Styles\Web.config" />
     <Content Include="Properties\AssemblyInfo.cs" />
     <Content Include="Module.txt" />
-    <Folder Include="Properties" />
-    <Folder Include="Assets" />
-    <Folder Include="Controllers" />
-    <Folder Include="Views" />
-    <Folder Include="Models" />
-    <Folder Include="Scripts" />
-    <Folder Include="Styles" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Orchard\Orchard.Framework.csproj">
@@ -95,6 +88,48 @@
       <Name>Orchard.Core</Name>
       <Private>false</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Orchard.Alias\Orchard.Alias.csproj">
+      <Project>{475b6c45-b27c-438b-8966-908b9d6d1077}</Project>
+      <Name>Orchard.Alias</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdminMenu.cs" />
+    <Compile Include="BaseRouteFilter.cs" />
+    <Compile Include="BaseUrlContext.cs" />
+    <Compile Include="BaseUrlDescriptor.cs" />
+    <Compile Include="BaseUrlRoutes.cs" />
+    <Compile Include="BaseUrlRoutesProvider.cs" />
+    <Compile Include="BaseUrlSegmentDescriptor.cs" />
+    <Compile Include="Controllers\BaseUrlController.cs" />
+    <Compile Include="Controllers\BaseUrlAdminController.cs" />
+    <Compile Include="Helpers\BaseUrlExtensions.cs" />
+    <Compile Include="Helpers\StringExtensions.cs" />
+    <Compile Include="Migrations.cs" />
+    <Compile Include="Models\BaseUrlTemplateRecord.cs" />
+    <Compile Include="Services\IBaseUrlManager.cs" />
+    <Compile Include="Services\IBaseUrlSegmentProvider.cs" />
+    <Compile Include="Styles\IBaseUrlTemplateService.cs" />
+    <Compile Include="ViewModels\IndexViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\BaseUrlAdmin\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Url\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\BaseUrlAdmin\Add.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\BaseUrlAdmin\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Data\Localization\ru-RU\orchard.module.po" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\BaseUrl\Invalid.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

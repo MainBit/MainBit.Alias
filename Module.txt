@@ -1,10 +1,13 @@
 ﻿Name: MainBit.Alias
 AntiForgery: enabled
-Author: The Orchard Team
-Website: http://orchardproject.net
-Version: 1.0
-OrchardVersion: 1.0
+Author: The MainBit Team
+Website: http://mainbit.com
+Version: 1.9
+OrchardVersion: 1.9.1
 Description: Description for the module
 Features:
-    MainBit.Alias:
-        Description: Description for feature MainBit.Alias.
+	MainBit.Alias
+		Name: MainBit.Alias
+        Description: Provides services to manage base url.
+		Category: Content
+		Dependencies: Orchard.Alias

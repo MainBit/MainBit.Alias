@@ -1,0 +1,31 @@
+@model MainBit.Alias.Models.BaseUrlTemplateRecord
+@{
+    Layout.Title = T("Create base URL");
+}
+
+@using (Html.BeginFormAntiForgeryPost()) {
+    @Html.ValidationSummary()
+    @Html.HiddenFor(m => m.Id)
+    <fieldset>
+        @Html.LabelFor(m => m.Position, T("Position"))
+        @Html.TextBoxFor(m => m.Position, new { type = "number", @class = "text small" })
+        @Html.ValidationMessageFor(m => m.Position)
+        <span class="hint">@T("")</span>
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.BaseUrlTemplate, T("Base url template"))
+        @Html.TextBoxFor(m => m.BaseUrlTemplate, new { @class = "text medium" })
+        @Html.ValidationMessageFor(m => m.BaseUrlTemplate)
+        <span class="hint">@T("")</span>
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.StoredVirtualPathTemplate, T("Stored virtual path template"))
+        @Html.TextBoxFor(m => m.StoredVirtualPathTemplate, new { @class = "text medium" })
+        @Html.ValidationMessageFor(m => m.StoredVirtualPathTemplate)
+        <span class="hint">@T("")</span>
+    </fieldset>
+    <fieldset>
+        <button class="primaryAction" type="submit">@T("Save")</button>
+        @Html.ActionLink(T("Cancel").ToString(), "Index", new { }, new { @class = "button" })
+    </fieldset>
+}

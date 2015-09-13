@@ -1,0 +1,45 @@
+﻿@model MainBit.Alias.ViewModels.IndexViewModel
+@{
+    Layout.Title = T("Base URL settings");
+}
+<div class="manage">
+    @Html.ActionLink(T("Add").Text, "Add", new { Area = "MainBit.Alias" }, new { @class = "button primaryAction" })
+</div>
+<table class="items">
+    <thead>
+        <tr>
+            <th scope="col">
+                @T("Position")
+            </th>
+            <th scope="col">
+                @T("Base url template")
+            </th>
+            <th>
+                @T("Stored virtual path template")
+            </th>
+            <th scope="col">
+                @T("Actions")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var template in Model.Templates)
+        {
+            <tr>
+                <td>
+                    @template.Position
+                </td>
+                <td>
+                    @template.BaseUrlTemplate
+                </td>
+                <td>
+                    @template.StoredVirtualPathTemplate
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit", new { area = "MainBit.Alias", id = @template.Id })">@T("Edit")</a>
+                    <a href="@Url.Action("Delete", new { area = "MainBit.Alias", id = @template.Id })">@T("Delete")</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

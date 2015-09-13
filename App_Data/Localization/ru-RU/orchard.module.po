@@ -1,0 +1,31 @@
+﻿#: "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
+msgid "Base URL settings"
+msgstr "Настройки базового URL"
+
+#: "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
+msgid "Add"
+msgstr "Добавить"
+
+#: "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
+msgid "Position"
+msgstr "Позиция"
+
+#: "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
+msgid "Base url template"
+msgstr "Шаблон базового URL"
+
+#: "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
+msgid "Stored virtual path template"
+msgstr "Шаблон сохраненного относительного URL"
+
+#: "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
+msgid "Actions"
+msgstr "Действия"
+
+
