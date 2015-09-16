@@ -11,15 +11,15 @@ using System.Web.Mvc;
 
 namespace MainBit.Alias
 {
-    public class BaseUrlRoutesProvider : IRouteProvider
+    public class UrlTemplateRoutesProvider : IRouteProvider
     {
         private readonly ShellBlueprint _blueprint;
         private readonly IAliasHolder _aliasHolder;
         private readonly IWorkContextAccessor _wca;
-        private readonly IBaseUrlManager _baseUrlManager;
+        private readonly IUrlTemplateManager _baseUrlManager;
 
-        public BaseUrlRoutesProvider(IWorkContextAccessor wca,
-            IBaseUrlManager baseUrlManager,
+        public UrlTemplateRoutesProvider(IWorkContextAccessor wca,
+            IUrlTemplateManager baseUrlManager,
             ShellBlueprint blueprint,
             IAliasHolder aliasHolder)
         {
@@ -43,7 +43,7 @@ namespace MainBit.Alias
             return distinctAreaNames.Select(areaName =>
                 new RouteDescriptor {
                     Priority = 100,
-                    Route = new BaseUrlRoutes(_wca, _aliasHolder, areaName, new MvcRouteHandler())
+                    Route = new UrlTemplateRoutes(_wca, _aliasHolder, areaName, new MvcRouteHandler())
                 }).ToList();
         }
     }

@@ -6,8 +6,8 @@ using System.Web;
 
 namespace MainBit.Alias.ViewModels
 {
-    public class IndexViewModel
+    public class EnumUrlSegmentIndexViewModel
     {
-        public List<BaseUrlTemplateRecord> Templates { get; set; }
+        public List<EnumUrlSegmentRecord> Templates { get; set; }
     }
 }

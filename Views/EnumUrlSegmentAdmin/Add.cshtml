@@ -1,0 +1,37 @@
+@model MainBit.Alias.Models.EnumUrlSegmentRecord
+@{
+    Layout.Title = T("Create enumeration URL segment");
+}
+
+@using (Html.BeginFormAntiForgeryPost()) {
+    @Html.ValidationSummary()
+    @Html.HiddenFor(m => m.Id)
+    <fieldset>
+        @Html.LabelFor(m => m.Position, T("Position"))
+        @Html.TextBoxFor(m => m.Position, new { type = "number", @class = "text small" })
+        @Html.ValidationMessageFor(m => m.Position)
+        <span class="hint">@T("")</span>
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.Name, T("Name"))
+        @Html.TextBoxFor(m => m.Name, new { @class = "text medium" })
+        @Html.ValidationMessageFor(m => m.Name)
+        <span class="hint">@T("")</span>
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.PossibleValues, T("Values"))
+        @Html.TextBoxFor(m => m.PossibleValues, new { @class = "text large" })
+        @Html.ValidationMessageFor(m => m.PossibleValues)
+        <span class="hint">@T("Without default value")</span>
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.DefaultValue, T("Default value"))
+        @Html.TextBoxFor(m => m.DefaultValue, new { @class = "text medium" })
+        @Html.ValidationMessageFor(m => m.DefaultValue)
+        <span class="hint">@T("")</span>
+    </fieldset>
+    <fieldset>
+        <button class="primaryAction" type="submit">@T("Save")</button>
+        @Html.ActionLink(T("Cancel").ToString(), "Index", new { }, new { @class = "button" })
+    </fieldset>
+}

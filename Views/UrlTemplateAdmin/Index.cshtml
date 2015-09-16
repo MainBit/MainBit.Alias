@@ -1,0 +1,48 @@
+﻿@model MainBit.Alias.ViewModels.UrlTemplateIndexViewModel
+@{
+    Layout.Title = T("URL templates");
+}
+@Html.AntiForgeryTokenOrchard()
+<div class="manage">
+    @Html.ActionLink(T("Clear сache").Text, "ClearСache", new { Area = "MainBit.Alias" }, new { @class = "button primaryAction" })
+    @Html.ActionLink(T("Add").Text, "Add", new { Area = "MainBit.Alias" }, new { @class = "button primaryAction" })
+</div>
+<table class="items">
+    <thead>
+        <tr>
+            <th scope="col">
+                @T("Position")
+            </th>
+            <th scope="col">
+                @T("Base URL")
+            </th>
+            <th>
+                @T("Stored virtual path")
+            </th>
+            <th scope="col">
+                @T("Actions")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var template in Model.Templates)
+        {
+            <tr>
+                <td>
+                    @template.Position
+                </td>
+                <td>
+                    @template.BaseUrl
+                </td>
+                <td>
+                    @template.StoredVirtualPath
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").Text, "Edit", "UrlTemplateAdmin", new { id = @template.Id, area = "MainBit.Alias" }, null)
+                    @T(" | ")
+                    @Html.ActionLink(T("Delete").Text, "Delete", "UrlTemplateAdmin", new { id = @template.Id, area = "MainBit.Alias" }, new { data_unsafe_url = T("Are you sure you want to delete this base url template?") })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

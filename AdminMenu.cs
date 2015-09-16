@@ -4,7 +4,6 @@ using Orchard.Security;
 using Orchard.UI.Navigation;
 
 namespace Orchard.Alias {
-    [OrchardFeature("MainBit.Alias")]
     public class AdminMenu : INavigationProvider {
         public Localizer T { get; set; }
 
@@ -14,7 +13,11 @@ namespace Orchard.Alias {
         {
             builder
                 .Add(T("Settings"), menu => menu
-                    .Add(T("Base URL"), "2", item => Describe(item, "Index", "BaseUrlAdmin", false)));
+                    .Add(T("URL templates"), "2", item => Describe(item, "Index", "UrlTemplateAdmin", false)
+                        .Add(T("URL templates"), "2", subItem => Describe(subItem, "Index", "UrlTemplateAdmin", true))
+                        .Add(T("Enumeration URL segments"), "3", subItem => Describe(subItem, "Index", "EnumUrlSegmentAdmin", true))
+                    )
+                );
         }
 
         static NavigationItemBuilder Describe(NavigationItemBuilder item, string actionName, string controllerName, bool localNav)

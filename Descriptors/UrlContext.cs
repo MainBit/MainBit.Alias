@@ -6,9 +6,9 @@ using System.Web;
 
 namespace MainBit.Alias
 {
-    public class BaseUrlContext
+    public class UrlContext
     {
-        public BaseUrlDescriptor Descriptor { get; set; }
+        public UrlTemplateDescriptor Descriptor { get; set; }
         public string DisplayVirtualPath { get; set; }
         public string StoredVirtualPath { get; set; }
     }

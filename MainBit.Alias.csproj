@@ -54,21 +54,20 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Web.DynamicData" />
-    <Reference Include="System.Web.Mvc, Version=5.2.3, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\lib\aspnetmvc\System.Web.Mvc.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets.json" />
     <Content Include="Web.config" />
     <Content Include="Properties\AssemblyInfo.cs" />
     <Content Include="Module.txt" />
@@ -92,38 +91,53 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminMenu.cs" />
-    <Compile Include="BaseRouteFilter.cs" />
-    <Compile Include="BaseUrlContext.cs" />
-    <Compile Include="BaseUrlDescriptor.cs" />
-    <Compile Include="BaseUrlRoutes.cs" />
-    <Compile Include="BaseUrlRoutesProvider.cs" />
-    <Compile Include="BaseUrlSegmentDescriptor.cs" />
-    <Compile Include="Controllers\BaseUrlController.cs" />
-    <Compile Include="Controllers\BaseUrlAdminController.cs" />
-    <Compile Include="Helpers\BaseUrlExtensions.cs" />
+    <Compile Include="Descriptors\DescribeUrlSegmentsContext.cs" />
+    <Compile Include="Helpers\UrlHelperExtensions.cs" />
+    <Compile Include="Models\EnumUrlSegmentRecord.cs" />
+    <Compile Include="Providers\EnumUrlSegmentProvider.cs" />
+    <Compile Include="Services\IEnumUrlSegmentService.cs" />
+    <Compile Include="Descriptors\UrlContext.cs" />
+    <Compile Include="Descriptors\UrlTemplateDescriptor.cs" />
+    <Compile Include="Routes\UrlTemplateRoutes.cs" />
+    <Compile Include="Routes\UrlTemplateRoutesProvider.cs" />
+    <Compile Include="Descriptors\UrlSegmentDescriptor.cs" />
+    <Compile Include="Controllers\UrlTemplateController.cs" />
+    <Compile Include="Controllers\UrlTemplateAdminController.cs" />
+    <Compile Include="Controllers\EnumUrlSegmentAdminController.cs" />
+    <Compile Include="Helpers\HttpRequestExtensions.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Migrations.cs" />
-    <Compile Include="Models\BaseUrlTemplateRecord.cs" />
-    <Compile Include="Services\IBaseUrlManager.cs" />
-    <Compile Include="Services\IBaseUrlSegmentProvider.cs" />
-    <Compile Include="Services\IBaseUrlTemplateService.cs" />
-    <Compile Include="ViewModels\IndexViewModel.cs" />
+    <Compile Include="Models\UrlTemplateRecord.cs" />
+    <Compile Include="Services\IUrlService.cs" />
+    <Compile Include="Services\IUrlTemplateManager.cs" />
+    <Compile Include="Services\IUrlSegmentProvider.cs" />
+    <Compile Include="Services\IUrlTemplateService.cs" />
+    <Compile Include="ViewModels\EnumUrlSegmentIndexViewModel.cs" />
+    <Compile Include="ViewModels\UrlTemplateIndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\BaseUrlAdmin\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <Content Include="Views\BaseUrlAdmin\Add.cshtml" />
+    <Content Include="Views\UrlTemplateAdmin\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\BaseUrlAdmin\Edit.cshtml" />
+    <Content Include="Views\EnumUrlSegmentAdmin\Add.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\UrlTemplateAdmin\Add.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\UrlTemplateAdmin\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\Localization\ru-RU\orchard.module.po" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\BaseUrl\Invalid.cshtml" />
+    <Content Include="Views\UrlTemplate\Invalid.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EnumUrlSegmentAdmin\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EnumUrlSegmentAdmin\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

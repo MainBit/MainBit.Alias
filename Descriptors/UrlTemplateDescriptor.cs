@@ -6,9 +6,14 @@ using System.Web;
 
 namespace MainBit.Alias
 {
-    public class BaseUrlDescriptor : ICloneable
+    public class UrlTemplateDescriptor : ICloneable
     {
-        public BaseUrlTemplateRecord Template { get; set; }
+        public UrlTemplateDescriptor()
+        {
+            Segments = new Dictionary<string, string>();
+        }
+
+        public UrlTemplateRecord Template { get; set; }
         public Dictionary<string, string> Segments { get; set; }
         public string BaseUrl { get; set; }
 
@@ -17,9 +22,9 @@ namespace MainBit.Alias
         {
             return CloneImpl();
         }
-        protected virtual BaseUrlDescriptor CloneImpl()
+        protected virtual UrlTemplateDescriptor CloneImpl()
         {
-            var copy = (BaseUrlDescriptor)MemberwiseClone();
+            var copy = (UrlTemplateDescriptor)MemberwiseClone();
             copy.Segments = Segments.ToDictionary(entry => entry.Key, entry => entry.Value);
             return copy;
         }

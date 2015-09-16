@@ -1,31 +1,163 @@
-﻿#: "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
-msgctxt "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
-msgid "Base URL settings"
-msgstr "Настройки базового URL"
+﻿#: "Orchard.Alias.AdminMenu"
+msgctxt "Orchard.Alias.AdminMenu"
+msgid "URL templates"
+msgstr "Шаблоны URL"
 
-#: "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
-msgctxt "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
+#: "Orchard.Alias.AdminMenu"
+msgctxt "Orchard.Alias.AdminMenu"
+msgid "Enumeration URL segments"
+msgstr "Сегменты URL с перечислением"
+
+
+
+
+
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgid "URL templates"
+msgstr "Шаблоны URL"
+
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
 msgid "Add"
 msgstr "Добавить"
 
-#: "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
-msgctxt "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
 msgid "Position"
 msgstr "Позиция"
 
-#: "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
-msgctxt "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
-msgid "Base url template"
-msgstr "Шаблон базового URL"
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgid "Base URL"
+msgstr "Базовый URL"
 
-#: "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
-msgctxt "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
-msgid "Stored virtual path template"
-msgstr "Шаблон сохраненного относительного URL"
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgid "Stored virtual path"
+msgstr "Сохраненный относительный URL"
 
-#: "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
-msgctxt "~/Modules/MainBit.Alias/Views/BaseUrlAdmin/Index.cshtml"
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
 msgid "Actions"
 msgstr "Действия"
 
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgid "Delete"
+msgstr "Удалить"
 
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgid "Clear сache"
+msgstr "Очистить кэш"
+
+
+
+
+
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Add.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Add.cshtml"
+msgid "Position"
+msgstr "Позиция"
+
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Add.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Add.cshtml"
+msgid "Base URL"
+msgstr "Базовый URL"
+
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Add.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Add.cshtml"
+msgid "Stored virtual path"
+msgstr "Сохраненный относительный URL"
+
+
+
+
+
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Edit.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Edit.cshtml"
+msgid "Position"
+msgstr "Позиция"
+
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Edit.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Edit.cshtml"
+msgid "Base URL"
+msgstr "Базовый URL"
+
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Edit.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Edit.cshtml"
+msgid "Stored virtual path"
+msgstr "Сохраненный относительный URL"
+
+
+
+
+
+#: "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Index.cshtml"
+msgid "Position"
+msgstr "Позиция"
+
+#: "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Index.cshtml"
+msgid "Name"
+msgstr "Название"
+
+#: "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Index.cshtml"
+msgid "Values"
+msgstr "Значения"
+
+#: "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Index.cshtml"
+msgid "Default value"
+msgstr "Значение по умолчанию"
+
+
+
+
+
+#: "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Add.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Add.cshtml"
+msgid "Position"
+msgstr "Позиция"
+
+#: "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Add.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Add.cshtml"
+msgid "Name"
+msgstr "Название"
+
+#: "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Add.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Add.cshtml"
+msgid "Values"
+msgstr "Значения"
+
+#: "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Add.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Add.cshtml"
+msgid "Default value"
+msgstr "Значение по умолчанию"
+
+
+
+
+
+#: "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Edit.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Edit.cshtml"
+msgid "Position"
+msgstr "Позиция"
+
+#: "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Edit.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Edit.cshtml"
+msgid "Name"
+msgstr "Название"
+
+#: "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Edit.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Edit.cshtml"
+msgid "Values"
+msgstr "Значения"
+
+#: "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Edit.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/EnumUrlSegmentAdmin/Edit.cshtml"
+msgid "Default value"
+msgstr "Значение по умолчанию"

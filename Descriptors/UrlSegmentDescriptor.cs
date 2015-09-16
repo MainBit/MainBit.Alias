@@ -5,7 +5,7 @@ using System.Web;
 
 namespace MainBit.Alias
 {
-    public class BaseUrlSegmentDescriptor
+    public class UrlSegmentDescriptor
     {
         public string Name { get; set; }
         public List<string> Values { get; set; }

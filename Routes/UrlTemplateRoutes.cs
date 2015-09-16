@@ -14,13 +14,13 @@ using MainBit.Alias.Helpers;
 
 namespace MainBit.Alias
 {
-    public class BaseUrlRoutes : RouteBase, IRouteWithArea {
+    public class UrlTemplateRoutes : RouteBase, IRouteWithArea {
 
         private readonly AliasMap _aliasMap;
         private readonly IRouteHandler _routeHandler;
         private readonly IWorkContextAccessor _workContextAccessor;
 
-        public BaseUrlRoutes(
+        public UrlTemplateRoutes(
             IWorkContextAccessor workContextAccessor,
             IAliasHolder aliasHolder,
             string areaName,
@@ -46,20 +46,22 @@ namespace MainBit.Alias
         public static bool IsNeedToConfigureBaseUrl(HttpContextBase httpContext)
         {
             var allowInvalid = new[] {
-                "MainBit.Alias/BaseUrlAdmin/Index",
-                "MainBit.Alias/BaseUrlAdmin/Add",
-                "MainBit.Alias/BaseUrlAdmin/Delete",
+                "MainBit.Alias/UrlTemplateAdmin",
+                "MainBit.Alias/UrlTemplateAdmin/Index",
+                "MainBit.Alias/UrlTemplateAdmin/Add",
+                "MainBit.Alias/UrlTemplateAdmin/Delete",
                 "Users/Account/LogOff",
                 "Users/Account/LogOn",
                 "Users/Account/AccessDenied"
             };
             var allowInvalidStart = new[] {
-                "MainBit.Alias/BaseUrlAdmin/Edit"
+                "MainBit.Alias/UrlTemplateAdmin/Edit"
             };
 
             var virtualPath = httpContext.Request.AppRelativeCurrentExecutionFilePath.Substring(2) + httpContext.Request.PathInfo;
             if (allowInvalid.Contains(virtualPath, StringComparer.InvariantCultureIgnoreCase)
-                || allowInvalidStart.Any(p => p.StartsWith(virtualPath, StringComparison.InvariantCultureIgnoreCase)))
+                || allowInvalidStart.Any(p => virtualPath.StartsWith(p, StringComparison.InvariantCultureIgnoreCase))
+                || httpContext.Request.QueryString.AllKeys.Contains("MainBit.Alias", StringComparer.InvariantCultureIgnoreCase))
             {
                 return true;
             }
@@ -76,43 +78,49 @@ namespace MainBit.Alias
             using (var wcs = _workContextAccessor.CreateWorkContextScope(new HttpContextWrapper(httpContext.ApplicationInstance.Context)))
             {
                 var workContext = wcs.WorkContext;
-                var baseUrlManager = workContext.Resolve<IBaseUrlManager>();
-                var baseUrl = httpContext.Request.GetBaseUrl();
-                var baseUrlContext = baseUrlManager.GetBaseUrlContext(baseUrl);
+                var urlService = workContext.Resolve<IUrlService>();
+                var urlContext = urlService.GetContext(httpContext.Request);
 
 
                 // marke base url ivalid and later check it in filter
-                if (baseUrlContext == null && !IsNeedToConfigureBaseUrl(httpContext))
+                if (urlContext == null)
                 {
-                    MarkInvalid(httpContext);
-                    var data = new RouteData(this, _routeHandler);
-                    data.Values.Add("controller", "BaseUrl");
-                    data.Values.Add("action", "Invalid");
-                    data.Values["area"] = Area;
-                    data.DataTokens["area"] = Area;
-                    return data;
+                    if (IsNeedToConfigureBaseUrl(httpContext))
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        MarkInvalid(httpContext);
+                        var data = new RouteData(this, _routeHandler);
+                        data.Values.Add("controller", "UrlTemplate");
+                        data.Values.Add("action", "Invalid");
+                        data.Values["area"] = "MainBit.Alias";
+                        data.DataTokens["area"] = "MainBit.Alias";
+                        return data;
+                    }
                 }
 
                 // not need process because it will process by default route provider
-                if (string.IsNullOrWhiteSpace(baseUrlContext.Descriptor.Template.StoredVirtualPathTemplate)) { 
+                if (string.IsNullOrWhiteSpace(urlContext.Descriptor.Template.StoredVirtualPath))
+                { 
                     return null;
                 }
 
                 var virtualPath = httpContext.Request.AppRelativeCurrentExecutionFilePath.Substring(2) + httpContext.Request.PathInfo;
-                var displayVirtualPath = baseUrlManager.GetDisplayVirtualPath(baseUrlContext, virtualPath);
-                if (!string.Equals(virtualPath, displayVirtualPath, StringComparison.InvariantCultureIgnoreCase))
+                if (!string.Equals(virtualPath, urlContext.StoredVirtualPath, StringComparison.InvariantCultureIgnoreCase))
                 {
                     // need redirect
                 }
                 
                 // Attempt to lookup RouteValues in the alias map
-                AliasInfo aliasInfo;
+                IDictionary<string, string> routeValues; //AliasInfo aliasInfo;
                 // TODO: Might as well have the lookup in AliasHolder...
-                if (_aliasMap.TryGetAlias(baseUrlContext.StoredVirtualPath, out aliasInfo))
+                if (_aliasMap.TryGetAlias(urlContext.StoredVirtualPath, out routeValues)) //if (_aliasMap.TryGetAlias(baseUrlContext.StoredVirtualPath, out aliasInfo))
                 {
                     // Construct RouteData from the route values
                     var data = new RouteData(this, _routeHandler);
-                    foreach (var routeValue in aliasInfo.RouteValues)
+                    foreach (var routeValue in routeValues)  //foreach (var routeValue in aliasInfo.RouteValues)
                     {
                         var key = routeValue.Key;
                         if (key.EndsWith("-"))
@@ -134,22 +142,22 @@ namespace MainBit.Alias
         public override VirtualPathData GetVirtualPath(RequestContext requestContext, RouteValueDictionary routeValues) {
 
             var workContext = _workContextAccessor.GetContext();
-            var baseUrlManager = workContext.Resolve<IBaseUrlManager>();
+            var urlService = workContext.Resolve<IUrlService>();
             var baseUrl = requestContext.HttpContext.Request.GetBaseUrl();
-            var baseUrlContext = baseUrlManager.GetBaseUrlContext(baseUrl);
+            var urlContext = urlService.GetContext(baseUrl);
 
             // need return not fount page
-            if (baseUrlContext == null) { return null; }
+            if (urlContext == null) { return null; }
 
             // not need process because it will process by default route provider
-            if (string.IsNullOrWhiteSpace(baseUrlContext.Descriptor.Template.StoredVirtualPathTemplate)) { return null; }
+            if (string.IsNullOrWhiteSpace(urlContext.Descriptor.Template.StoredVirtualPath)) { return null; }
 
             // Lookup best match for route values in the expanded tree
             var match = _aliasMap.Locate(routeValues);
             if (match != null)
             {
                 // Build any "spare" route values onto the Alias (so we correctly support any additional query parameters)
-                var sb = new StringBuilder(baseUrlManager.GetDisplayVirtualPath(baseUrlContext, match.Item2));
+                var sb = new StringBuilder(urlService.GetDisplayVirtualPath(urlContext, match.Item2));
                 var extra = 0;
                 foreach (var routeValue in routeValues)
                 {

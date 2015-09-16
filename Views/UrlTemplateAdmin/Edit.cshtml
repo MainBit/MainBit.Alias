@@ -1,6 +1,6 @@
-@model MainBit.Alias.Models.BaseUrlTemplateRecord
+@model MainBit.Alias.Models.UrlTemplateRecord
 @{
-    Layout.Title = T("Update base URL");
+    Layout.Title = T("Update URL template");
 }
 
 @using (Html.BeginFormAntiForgeryPost())
@@ -14,15 +14,15 @@
         <span class="hint">@T("")</span>
     </fieldset>
     <fieldset>
-        @Html.LabelFor(m => m.BaseUrlTemplate, T("Base url template"))
-        @Html.TextBoxFor(m => m.BaseUrlTemplate, new { @class = "text medium" })
-        @Html.ValidationMessageFor(m => m.BaseUrlTemplate)
+        @Html.LabelFor(m => m.BaseUrl, T("Base url"))
+        @Html.TextBoxFor(m => m.BaseUrl, new { @class = "text large" })
+        @Html.ValidationMessageFor(m => m.BaseUrl)
         <span class="hint">@T("")</span>
     </fieldset>
     <fieldset>
-        @Html.LabelFor(m => m.StoredVirtualPathTemplate, T("Stored virtual path template"))
-        @Html.TextBoxFor(m => m.StoredVirtualPathTemplate, new { @class = "text medium" })
-        @Html.ValidationMessageFor(m => m.StoredVirtualPathTemplate)
+        @Html.LabelFor(m => m.StoredVirtualPath, T("Stored virtual path"))
+        @Html.TextBoxFor(m => m.StoredVirtualPath, new { @class = "text large" })
+        @Html.ValidationMessageFor(m => m.StoredVirtualPath)
         <span class="hint">@T("")</span>
     </fieldset>
     <fieldset>
