@@ -17,7 +17,7 @@
                 @T("Base URL")
             </th>
             <th>
-                @T("Stored virtual path")
+                @T("Stored prefix")
             </th>
             <th scope="col">
                 @T("Actions")
@@ -35,7 +35,7 @@
                     @template.BaseUrl
                 </td>
                 <td>
-                    @template.StoredVirtualPath
+                    @template.StoredPrefix
                 </td>
                 <td>
                     @Html.ActionLink(T("Edit").Text, "Edit", "UrlTemplateAdmin", new { id = @template.Id, area = "MainBit.Alias" }, null)

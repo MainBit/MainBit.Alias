@@ -19,13 +19,13 @@
         <span class="hint">@T("")</span>
     </fieldset>
     <fieldset>
-        @Html.LabelFor(m => m.StoredVirtualPath, T("Stored virtual path template"))
-        @Html.TextBoxFor(m => m.StoredVirtualPath, new { @class = "text large" })
-        @Html.ValidationMessageFor(m => m.StoredVirtualPath)
+        @Html.LabelFor(m => m.StoredPrefix, T("Stored prefix template"))
+        @Html.TextBoxFor(m => m.StoredPrefix, new { @class = "text large" })
+        @Html.ValidationMessageFor(m => m.StoredPrefix)
         <span class="hint">@T("")</span>
     </fieldset>
     <fieldset>
         <button class="primaryAction" type="submit">@T("Save")</button>
-        @Html.ActionLink(T("Cancel").ToString(), "Index", new { }, new { @class = "button" })
+        @Html.ActionLink(T("Cancel").ToString(), "Index", null, new { @class = "button" })
     </fieldset>
 }

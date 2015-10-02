@@ -92,9 +92,12 @@
   <ItemGroup>
     <Compile Include="AdminMenu.cs" />
     <Compile Include="Descriptors\DescribeUrlSegmentsContext.cs" />
+    <Compile Include="Extensions\RequestExtensions.cs" />
     <Compile Include="Helpers\UrlHelperExtensions.cs" />
     <Compile Include="Models\EnumUrlSegmentRecord.cs" />
     <Compile Include="Providers\EnumUrlSegmentProvider.cs" />
+    <Compile Include="Routes\RedirectHandler.cs" />
+    <Compile Include="Routes\RedirectRouteHandler.cs" />
     <Compile Include="Services\IEnumUrlSegmentService.cs" />
     <Compile Include="Descriptors\UrlContext.cs" />
     <Compile Include="Descriptors\UrlTemplateDescriptor.cs" />
@@ -176,7 +179,7 @@
           <IISUrl>
           </IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>True</UseCustomServer>
+          <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>http://orchard.codeplex.com</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>

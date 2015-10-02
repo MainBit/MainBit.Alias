@@ -16,7 +16,7 @@ namespace MainBit.Alias
         public UrlTemplateRecord Template { get; set; }
         public Dictionary<string, string> Segments { get; set; }
         public string BaseUrl { get; set; }
-
+        public string StoredPrefix { get; set; }
         
         public object Clone()
         {

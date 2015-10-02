@@ -9,7 +9,7 @@ namespace MainBit.Alias
                     .Column<int>("Id", column => column.PrimaryKey().Identity())
                     .Column<int>("Position")
                     .Column<string>("BaseUrl", c => c.WithLength(255))
-                    .Column<string>("StoredVirtualPath", c => c.WithLength(255))
+                    .Column<string>("StoredPrefix", c => c.WithLength(255))
                 );
 
             return 1;

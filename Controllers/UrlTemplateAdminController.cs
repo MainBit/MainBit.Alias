@@ -63,7 +63,7 @@ namespace MainBit.Alias.Controllers
                 return new HttpUnauthorizedResult();
 
             viewModel.BaseUrl = viewModel.BaseUrl.TrimSafe();
-            viewModel.StoredVirtualPath = viewModel.StoredVirtualPath.TrimSafe();
+            viewModel.StoredPrefix = viewModel.StoredPrefix.TrimSafe();
 
             if (String.IsNullOrWhiteSpace(viewModel.BaseUrl))
             {
@@ -96,7 +96,7 @@ namespace MainBit.Alias.Controllers
                 return new HttpUnauthorizedResult();
 
             viewModel.BaseUrl = viewModel.BaseUrl.TrimSafe();
-            viewModel.StoredVirtualPath = viewModel.StoredVirtualPath.TrimSafe();
+            viewModel.StoredPrefix = viewModel.StoredPrefix.TrimSafe();
 
             if (String.IsNullOrWhiteSpace(viewModel.BaseUrl))
             {

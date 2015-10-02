@@ -5,104 +5,124 @@ using System.Linq;
 using System.Web;
 using System.Web.Routing;
 using MainBit.Alias.Helpers;
+using Orchard.Logging;
+using Orchard.Mvc;
 
 namespace MainBit.Alias.Services
 {
     public interface IUrlService : IDependency
     {
-        UrlContext GetContext(HttpRequestBase request);
-        UrlContext GetContext(string baseUrl, string virtualPath = null);
-        UrlContext GetContext(Dictionary<string, string> segments, string virtualPath = null);
+        UrlContext CurrentUrlContext();
+        //UrlContext GetContext(HttpRequestBase httpRequest);
+        UrlContext GetContext(string baseUrl, string virtualPath = "");
+        UrlContext GetContext(Dictionary<string, string> segments, string virtualPath = "");
 
         UrlContext ChangeSegmentValues(UrlContext urlContext, object segments);
         UrlContext ChangeSegmentValues(UrlContext urlContext, RouteValueDictionary segments);
 
-        string GetDisplayVirtualPath(UrlContext urlContext, string virtualPath);
-        string GetStoredVirtualPath(UrlContext urlContext, string virtualPath);
+        //string GetDisplayVirtualPath(UrlContext urlContext, string virtualPath);
+        //string GetStoredVirtualPath(UrlContext urlContext, string virtualPath);
+
+        bool IsUrlTemplatesConfigured();
     }
     public class UrlService : IUrlService
     {
         private readonly IUrlTemplateManager _urlTemplateManager;
+        private readonly IHttpContextAccessor _hta;
 
-        public UrlService(IUrlTemplateManager urlTemplateManager)
+        public UrlService(IUrlTemplateManager urlTemplateManager,
+            IHttpContextAccessor hta)
         {
             _urlTemplateManager = urlTemplateManager;
+            _hta = hta;
+            Logger = NullLogger.Instance;
         }
 
-        public UrlContext GetContext(HttpRequestBase request)
-        {
-            var baseUrl = request.GetBaseUrl();
-            var virtualPath = request.AppRelativeCurrentExecutionFilePath.Substring(2) + request.PathInfo;
+        public ILogger Logger { get; set; }
 
-            return GetContext(baseUrl, virtualPath);
+        private UrlContext _currentUrlContext = null;
+        public UrlContext CurrentUrlContext()
+        {
+            if (_currentUrlContext == null)
+            {
+                var httpContext = _hta.Current();
+
+                var baseUrl = httpContext.Request.GetBaseUrl();
+                var virtualPath = httpContext.Request.AppRelativeCurrentExecutionFilePath.Substring(2) + httpContext.Request.PathInfo;
+
+                _currentUrlContext = GetContext(baseUrl, virtualPath);
+            }
+            return _currentUrlContext;
         }
 
-        public UrlContext GetContext(string baseUrl, string virtualPath = null)
+        public UrlContext GetContext(string baseUrl, string virtualPath)
         {
-            var templateDescriptors = _urlTemplateManager.DescribeUrlTemplates();
-            var templateDescriptor = templateDescriptors.FirstOrDefault(d =>
-                d.BaseUrl.Equals(baseUrl, StringComparison.InvariantCultureIgnoreCase));
+            var allTemplateDescriptors = _urlTemplateManager.DescribeUrlTemplates();
 
-            return BuildUrlContext(templateDescriptor, virtualPath);
+            var templateDescriptors = allTemplateDescriptors.Where(d =>
+                d.BaseUrl.Equals(baseUrl, StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+            return BuildUrlContext(templateDescriptors, virtualPath);
         }
 
-        public UrlContext GetContext(Dictionary<string, string> segments, string virtualPath = null)
+        public UrlContext GetContext(Dictionary<string, string> segments, string virtualPath)
         {
-            var templateDescriptors = _urlTemplateManager.DescribeUrlTemplates();
-            var templateDescriptor = templateDescriptors.FirstOrDefault(d =>
+            var allTemplateDescriptors = _urlTemplateManager.DescribeUrlTemplates();
+
+            var templateDescriptors = allTemplateDescriptors.Where(d =>
                 d.Segments.All(s => segments.ContainsKey(s.Key) && segments[s.Key] == s.Value)
-                && d.Segments.Count == segments.Count);
+                && d.Segments.Count == segments.Count).ToList();
 
-            return BuildUrlContext(templateDescriptor, virtualPath);
+            return BuildUrlContext(templateDescriptors, virtualPath);
         }
 
-        public string GetDisplayVirtualPath(UrlContext urlContext, string virtualPath)
-        {
-            if (urlContext == null
-                || string.IsNullOrWhiteSpace(urlContext.Descriptor.Template.StoredVirtualPath)
-                || virtualPath == null)
-            {
-                return virtualPath; 
-            }
+        //public string GetDisplayVirtualPath(UrlContext urlContext, string virtualPath)
+        //{
+        //    if (urlContext == null
+        //        || string.IsNullOrWhiteSpace(urlContext.Descriptor.Template.StoredVirtualPath)
+        //        || virtualPath == null)
+        //    {
+        //        return virtualPath; 
+        //    }
 
-            // work only for template like this {lang}/{virtualPath}
-            foreach (var segment in urlContext.Descriptor.Segments)
-            {
-                if (urlContext.Descriptor.Template.StoredVirtualPath.StartsWith(
-                    string.Format("{{{0}}}/", segment.Key), StringComparison.InvariantCultureIgnoreCase) &&
-                    virtualPath.StartsWith(segment.Value, StringComparison.InvariantCultureIgnoreCase)
-                    )
-                {
-                    return virtualPath.Substring(segment.Value.Length).TrimStart('/');
-                }
-            }
+        //    // work only for template like this {lang}/{virtualPath}
+        //    foreach (var segment in urlContext.Descriptor.Segments)
+        //    {
+        //        if (urlContext.Descriptor.Template.StoredVirtualPath.StartsWith(
+        //            string.Format("{{{0}}}/", segment.Key), StringComparison.InvariantCultureIgnoreCase) &&
+        //            virtualPath.StartsWith(segment.Value, StringComparison.InvariantCultureIgnoreCase)
+        //            )
+        //        {
+        //            return virtualPath.Substring(segment.Value.Length).TrimStart('/');
+        //        }
+        //    }
 
-            return virtualPath;
-        }
+        //    return virtualPath;
+        //}
 
-        public string GetStoredVirtualPath(UrlContext urlContext, string virtualPath)
-        {
-            if (urlContext == null
-                || string.IsNullOrWhiteSpace(urlContext.Descriptor.Template.StoredVirtualPath)
-                || virtualPath == null)
-            {
-                return virtualPath;
-            }
+        //public string GetStoredVirtualPath(UrlContext urlContext, string virtualPath)
+        //{
+        //    if (urlContext == null
+        //        || string.IsNullOrWhiteSpace(urlContext.Descriptor.Template.StoredVirtualPath)
+        //        || virtualPath == null)
+        //    {
+        //        return virtualPath;
+        //    }
 
-            // work only for template like this {lang}/{virtualPath}
-            foreach (var segment in urlContext.Descriptor.Segments)
-            {
-                if (urlContext.Descriptor.Template.StoredVirtualPath.StartsWith(
-                    string.Format("{{{0}}}/", segment.Key), StringComparison.InvariantCultureIgnoreCase) &&
-                    !virtualPath.StartsWith(segment.Value, StringComparison.InvariantCultureIgnoreCase)
-                    )
-                {
-                    return segment.Value + (string.IsNullOrEmpty(virtualPath) ? "" : "/" + virtualPath);
-                }
-            }
+        //    // work only for template like this {lang}/{virtualPath}
+        //    foreach (var segment in urlContext.Descriptor.Segments)
+        //    {
+        //        if (urlContext.Descriptor.Template.StoredVirtualPath.StartsWith(
+        //            string.Format("{{{0}}}/", segment.Key), StringComparison.InvariantCultureIgnoreCase) &&
+        //            !virtualPath.StartsWith(segment.Value, StringComparison.InvariantCultureIgnoreCase)
+        //            )
+        //        {
+        //            return segment.Value + (string.IsNullOrEmpty(virtualPath) ? "" : "/" + virtualPath);
+        //        }
+        //    }
 
-            return virtualPath;
-        }
+        //    return virtualPath;
+        //}
 
         public UrlContext ChangeSegmentValues(UrlContext urlContext, object segments)
         {
@@ -130,21 +150,64 @@ namespace MainBit.Alias.Services
                     : changedSegment.Value.ToString();
             }
 
-            return GetContext(newSegments);
+            return GetContext(newSegments, "");
         }
 
-        private UrlContext BuildUrlContext(UrlTemplateDescriptor descriptor, string virtualPath)
+        public bool IsUrlTemplatesConfigured()
         {
-            if (descriptor == null) { return null; }
+            return _urlTemplateManager.DescribeUrlTemplates().Any();
+        }
 
-            var urlContext = new UrlContext()
+        private UrlContext BuildUrlContext(List<UrlTemplateDescriptor> descriptors, string virtualPath)
+        {
+            if (descriptors.Count == 0) { return null; }
+
+            if (descriptors.Count > 1)
             {
-                Descriptor = descriptor
-            };
-            urlContext.DisplayVirtualPath = GetDisplayVirtualPath(urlContext, virtualPath);
-            urlContext.StoredVirtualPath = GetStoredVirtualPath(urlContext, virtualPath);
+                Logger.Debug(string.Format("Duplicate base url template for {0}", descriptors[0].BaseUrl));
+                // return null
+            }
 
-            return urlContext;
+            var desciptor = descriptors[0];
+            var virtualPathSlashEnd = virtualPath + "/";
+            if (!string.IsNullOrEmpty(desciptor.StoredPrefix)
+                && virtualPathSlashEnd.StartsWith(desciptor.StoredPrefix + "/", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return new UrlContext()
+                {
+                    NeedRedirect = true,
+                    Descriptor = desciptor,
+                    StoredVirtualPath = virtualPath,
+                    DisplayVirtualPath = virtualPath.Substring(desciptor.StoredPrefix.Length).TrimStart('/')
+                };
+            }
+            else
+            {
+                var allDescriptors = _urlTemplateManager.DescribeUrlTemplates();
+                var otherTemplateDescriptor = allDescriptors
+                    .FirstOrDefault(d => !string.IsNullOrEmpty(d.StoredPrefix)
+                        && virtualPathSlashEnd.StartsWith(d.StoredPrefix + "/", StringComparison.InvariantCultureIgnoreCase)
+                        && d != desciptor);
+
+                if (otherTemplateDescriptor != null)
+                {
+                    return new UrlContext()
+                    {
+                        NeedRedirect = true,
+                        Descriptor = otherTemplateDescriptor,
+                        StoredVirtualPath = virtualPath,
+                        DisplayVirtualPath = virtualPath.Substring(desciptor.StoredPrefix.Length).TrimStart('/')
+                    };
+                }
+            }
+
+            return new UrlContext()
+            {
+                NeedRedirect = false,
+                Descriptor = desciptor,
+                StoredVirtualPath = (desciptor.StoredPrefix + "/" + virtualPath).Trim('/'),
+                DisplayVirtualPath = virtualPath
+            };
         } 
     }
 }

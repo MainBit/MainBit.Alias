@@ -12,7 +12,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using MainBit.Alias.Helpers;
 
-namespace MainBit.Alias
+namespace MainBit.Alias.Routes
 {
     public class UrlTemplateRoutes : RouteBase, IRouteWithArea {
 
@@ -43,7 +43,7 @@ namespace MainBit.Alias
             httpContext.Items[BaseUrlInvalid] = null;
         }
 
-        public static bool IsNeedToConfigureBaseUrl(HttpContextBase httpContext)
+        public static bool IsNeedToConfigureUrlTemplates(HttpContextBase httpContext)
         {
             var allowInvalid = new[] {
                 "MainBit.Alias/UrlTemplateAdmin",
@@ -75,17 +75,28 @@ namespace MainBit.Alias
                 return null;
             }
 
-            using (var wcs = _workContextAccessor.CreateWorkContextScope(new HttpContextWrapper(httpContext.ApplicationInstance.Context)))
+            IWorkContextScope wcs = null;
+            try
             {
-                var workContext = wcs.WorkContext;
+                var workContext = _workContextAccessor.GetContext();
+                if (workContext == null)
+                {
+                    wcs = _workContextAccessor.CreateWorkContextScope(new HttpContextWrapper(httpContext.ApplicationInstance.Context));
+                    workContext = wcs.WorkContext;
+                }
+
+                workContext = workContext ?? wcs.WorkContext;
                 var urlService = workContext.Resolve<IUrlService>();
-                var urlContext = urlService.GetContext(httpContext.Request);
 
+                if (!urlService.IsUrlTemplatesConfigured())
+                {
+                    return null;
+                }
 
-                // marke base url ivalid and later check it in filter
+                var urlContext = urlService.CurrentUrlContext();
                 if (urlContext == null)
                 {
-                    if (IsNeedToConfigureBaseUrl(httpContext))
+                    if (IsNeedToConfigureUrlTemplates(httpContext))
                     {
                         return null;
                     }
@@ -101,18 +112,21 @@ namespace MainBit.Alias
                     }
                 }
 
-                // not need process because it will process by default route provider
-                if (string.IsNullOrWhiteSpace(urlContext.Descriptor.Template.StoredVirtualPath))
-                { 
+                // check if this url is soterd url (or wrond base url) and need to be redireced to right display url
+                // virtual path for display url can be the same (they differ in base url only)
+                // virtual path for stored url cannot be the same (orchard doesn't allow this)
+                if (urlContext.NeedRedirect)
+                {
+                    var data = new RouteData(this, new RedirectRouteHandler(urlContext.GetFullDisplayUrl()));
+                }
+
+                // check if this url doesn't need to find alias by current route
+                // because it will be processed by default orchard alias route
+                if (string.Equals(urlContext.StoredVirtualPath, urlContext.DisplayVirtualPath))
+                {
                     return null;
                 }
 
-                var virtualPath = httpContext.Request.AppRelativeCurrentExecutionFilePath.Substring(2) + httpContext.Request.PathInfo;
-                if (!string.Equals(virtualPath, urlContext.StoredVirtualPath, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    // need redirect
-                }
-                
                 // Attempt to lookup RouteValues in the alias map
                 IDictionary<string, string> routeValues; //AliasInfo aliasInfo;
                 // TODO: Might as well have the lookup in AliasHolder...
@@ -135,6 +149,13 @@ namespace MainBit.Alias
                     return data;
                 }
             }
+            finally
+            {
+                if (wcs != null)
+                {
+                    wcs.Dispose();
+                }
+            }
 
             return null;
         }
@@ -144,20 +165,25 @@ namespace MainBit.Alias
             var workContext = _workContextAccessor.GetContext();
             var urlService = workContext.Resolve<IUrlService>();
             var baseUrl = requestContext.HttpContext.Request.GetBaseUrl();
-            var urlContext = urlService.GetContext(baseUrl);
+            var urlContext = urlService.GetContext(baseUrl, "");
 
             // need return not fount page
             if (urlContext == null) { return null; }
 
-            // not need process because it will process by default route provider
-            if (string.IsNullOrWhiteSpace(urlContext.Descriptor.Template.StoredVirtualPath)) { return null; }
+            // check if this url doesn't need to find alias by current route
+            // because it will be processed by default orchard alias route
+            if (string.IsNullOrWhiteSpace(urlContext.Descriptor.Template.StoredPrefix)) { return null; }
 
             // Lookup best match for route values in the expanded tree
             var match = _aliasMap.Locate(routeValues);
             if (match != null)
             {
                 // Build any "spare" route values onto the Alias (so we correctly support any additional query parameters)
-                var sb = new StringBuilder(urlService.GetDisplayVirtualPath(urlContext, match.Item2));
+                var sb = new StringBuilder(urlContext.Descriptor.Template.StoredPrefix);
+                if(match.Item2 != string.Empty) {
+                    sb.Append('/');
+                    sb.Append(match.Item2);
+                }
                 var extra = 0;
                 foreach (var routeValue in routeValues)
                 {

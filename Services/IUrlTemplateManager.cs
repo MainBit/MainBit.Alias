@@ -11,7 +11,6 @@ namespace MainBit.Alias.Services
     public interface IUrlTemplateManager : IDependency {
         List<UrlTemplateDescriptor> DescribeUrlTemplates();
         List<UrlSegmentDescriptor> DescribeUrlSegments();
-
     }
 
     public class UrlTemplateManager : IUrlTemplateManager
@@ -47,15 +46,16 @@ namespace MainBit.Alias.Services
                 foreach (var template in templates)
                 {
                     var definedSegmentDescriptors = segmentDescriptors.Where(d =>
-                            template.BaseUrl.Contains(string.Format("{0}", d.Name))
+                            template.BaseUrl.Contains(string.Format("{{{0}}}", d.Name))
                             && d.Values.Count > 0);
                     var defaultSegmentDescriptors = segmentDescriptors.Where(d =>
-                            !template.BaseUrl.Contains(string.Format("{0}", d.Name)));
+                            !template.BaseUrl.Contains(string.Format("{{{0}}}", d.Name)));
 
                     var templateDescriptor = new UrlTemplateDescriptor()
                     {
                         Template = template,
-                        BaseUrl = template.BaseUrl
+                        BaseUrl = template.BaseUrl,
+                        StoredPrefix = template.StoredPrefix
                     };
 
                     foreach (var defaultSegmentDescriptor in defaultSegmentDescriptors)
@@ -71,6 +71,16 @@ namespace MainBit.Alias.Services
                     var templateDescriptors = new List<UrlTemplateDescriptor>() { templateDescriptor };
                     templateDescriptors = GenerateSegmentsCombinations(templateDescriptors, definedSegmentDescriptors);
                     allTemplateDescriptors.AddRange(templateDescriptors);
+                }
+
+                foreach (var templateDescriptor in allTemplateDescriptors)
+                {
+                    foreach (var segment in templateDescriptor.Segments)
+                    {
+                        templateDescriptor.StoredPrefix = templateDescriptor.StoredPrefix.Replace(
+                            string.Format("{{{0}}}", segment.Key),
+                            segment.Value);
+                    }
                 }
                 return allTemplateDescriptors;
             });

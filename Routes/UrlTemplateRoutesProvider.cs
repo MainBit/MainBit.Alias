@@ -9,7 +9,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace MainBit.Alias
+namespace MainBit.Alias.Routes
 {
     public class UrlTemplateRoutesProvider : IRouteProvider
     {

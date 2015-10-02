@@ -10,6 +10,6 @@ namespace MainBit.Alias.Models
         public virtual int Id { get; set; }
         public virtual int Position { get; set; }
         public virtual string BaseUrl { get; set; }
-        public virtual string StoredVirtualPath { get; set; }
+        public virtual string StoredPrefix { get; set; }
     }
 }
