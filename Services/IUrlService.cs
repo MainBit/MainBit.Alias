@@ -18,7 +18,7 @@ namespace MainBit.Alias.Services
         UrlContext GetContext(Dictionary<string, string> segments, string virtualPath = "");
 
         UrlContext ChangeSegmentValues(UrlContext urlContext, object segments);
-        UrlContext ChangeSegmentValues(UrlContext urlContext, RouteValueDictionary segments);
+        UrlContext ChangeSegmentValues(UrlContext urlContext, IDictionary<string, string> segments);
 
         //string GetDisplayVirtualPath(UrlContext urlContext, string virtualPath);
         //string GetStoredVirtualPath(UrlContext urlContext, string virtualPath);
@@ -129,7 +129,7 @@ namespace MainBit.Alias.Services
             return ChangeSegmentValues(urlContext, new RouteValueDictionary(segments));
         }
 
-        public UrlContext ChangeSegmentValues(UrlContext urlContext, RouteValueDictionary segments)
+        public UrlContext ChangeSegmentValues(UrlContext urlContext, IDictionary<string, string> segments)
         {
             if (urlContext == null) { return null; }
 
@@ -145,7 +145,7 @@ namespace MainBit.Alias.Services
                 }
 
                 newSegments[changedSegment.Key] =
-                    changedSegment.Value == null || changedSegment.Value.ToString() == string.Empty 
+                    changedSegment.Value == null || changedSegment.Value.ToString() == string.Empty
                     ? sementDescriptor.DefaultValue
                     : changedSegment.Value.ToString();
             }

@@ -55,7 +55,7 @@ namespace MainBit.Alias.Services
                     {
                         Template = template,
                         BaseUrl = template.BaseUrl,
-                        StoredPrefix = template.StoredPrefix
+                        StoredPrefix = template.StoredPrefix ?? string.Empty
                     };
 
                     foreach (var defaultSegmentDescriptor in defaultSegmentDescriptors)

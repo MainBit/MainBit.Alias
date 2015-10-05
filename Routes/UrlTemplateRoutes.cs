@@ -118,6 +118,7 @@ namespace MainBit.Alias.Routes
                 if (urlContext.NeedRedirect)
                 {
                     var data = new RouteData(this, new RedirectRouteHandler(urlContext.GetFullDisplayUrl()));
+                    return data;
                 }
 
                 // check if this url doesn't need to find alias by current route
@@ -179,11 +180,17 @@ namespace MainBit.Alias.Routes
             if (match != null)
             {
                 // Build any "spare" route values onto the Alias (so we correctly support any additional query parameters)
-                var sb = new StringBuilder(urlContext.Descriptor.Template.StoredPrefix);
-                if(match.Item2 != string.Empty) {
-                    sb.Append('/');
+                var sb = new StringBuilder();
+                if (match.Item2.Equals(urlContext.Descriptor.StoredPrefix, StringComparison.InvariantCultureIgnoreCase)) {
+                    sb.Append(match.Item2.Substring(urlContext.Descriptor.StoredPrefix.Length));
+                }
+                else if (match.Item2.StartsWith(urlContext.Descriptor.StoredPrefix + "/", StringComparison.InvariantCultureIgnoreCase)) {
+                    sb.Append(match.Item2.Substring(urlContext.Descriptor.StoredPrefix.Length + 1));
+                }
+                else {
                     sb.Append(match.Item2);
                 }
+
                 var extra = 0;
                 foreach (var routeValue in routeValues)
                 {
