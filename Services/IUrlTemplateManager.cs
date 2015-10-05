@@ -75,6 +75,10 @@ namespace MainBit.Alias.Services
 
                 foreach (var templateDescriptor in allTemplateDescriptors)
                 {
+                    if (templateDescriptor.StoredPrefix == null) {
+                        continue;
+                    }
+
                     foreach (var segment in templateDescriptor.Segments)
                     {
                         templateDescriptor.StoredPrefix = templateDescriptor.StoredPrefix.Replace(
