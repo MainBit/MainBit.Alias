@@ -48,7 +48,17 @@ namespace MainBit.Alias.Services
                 var httpContext = _hta.Current();
 
                 var baseUrl = httpContext.Request.GetBaseUrl();
-                var virtualPath = httpContext.Request.AppRelativeCurrentExecutionFilePath.Substring(2) + httpContext.Request.PathInfo;
+                var virtualPath = httpContext.Request.AppRelativeCurrentExecutionFilePath.Substring(2);
+                // when command is running from command line than HttpContextBase is HttpContextPlaceholder (that doesn't implement PathInfo)
+                try
+                {
+                    virtualPath += httpContext.Request.PathInfo;
+                }
+                catch (System.NotImplementedException e)
+                {
+
+                }
+                
 
                 _currentUrlContext = GetContext(baseUrl, virtualPath);
             }
