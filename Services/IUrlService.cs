@@ -7,6 +7,7 @@ using System.Web.Routing;
 using MainBit.Alias.Helpers;
 using Orchard.Logging;
 using Orchard.Mvc;
+using MainBit.Alias.Descriptors;
 
 namespace MainBit.Alias.Services
 {
@@ -80,7 +81,18 @@ namespace MainBit.Alias.Services
             var allTemplateDescriptors = _urlTemplateManager.DescribeUrlTemplates();
 
             var templateDescriptors = allTemplateDescriptors.Where(d =>
-                d.Segments.All(s => segments.ContainsKey(s.Key) && segments[s.Key] == s.Value)
+                d.Segments.All(s => segments.ContainsKey(s.Key) && segments[s.Key] == s.Value.Value)
+                && d.Segments.Count == segments.Count).ToList();
+
+            return BuildUrlContext(templateDescriptors, virtualPath);
+        }
+
+        public UrlContext GetContext(Dictionary<string, UrlSegmentValueDescriptor> segments, string virtualPath)
+        {
+            var allTemplateDescriptors = _urlTemplateManager.DescribeUrlTemplates();
+
+            var templateDescriptors = allTemplateDescriptors.Where(d =>
+                d.Segments.All(s => segments.ContainsKey(s.Key) && segments[s.Key].Value == s.Value.Value)
                 && d.Segments.Count == segments.Count).ToList();
 
             return BuildUrlContext(templateDescriptors, virtualPath);
@@ -144,7 +156,9 @@ namespace MainBit.Alias.Services
             if (urlContext == null) { return null; }
 
             var segmentDescriptors = _urlTemplateManager.DescribeUrlSegments();
-            var newSegments = new Dictionary<string, string>(urlContext.Descriptor.Segments);
+            var newSegments = urlContext.Descriptor.Segments.ToDictionary(
+                entry => entry.Key,
+                entry => entry.Value.TypedClone());
 
             foreach (var changedSegment in segments)
             {
@@ -156,8 +170,8 @@ namespace MainBit.Alias.Services
 
                 newSegments[changedSegment.Key] =
                     changedSegment.Value == null || changedSegment.Value.ToString() == string.Empty
-                    ? sementDescriptor.DefaultValue
-                    : changedSegment.Value.ToString();
+                    ? sementDescriptor.GetDefaultValue()
+                    : sementDescriptor.Values.First(sd => sd.Value == changedSegment.Value);
             }
 
             return GetContext(newSegments, "");

@@ -65,7 +65,10 @@ namespace MainBit.Alias.Services
                             defaultSegmentDescriptor.DefaultValue);
                         templateDescriptor.Segments.Add(
                             defaultSegmentDescriptor.Name,
-                            defaultSegmentDescriptor.DefaultValue);
+                            new UrlSegmentValueDescriptor {
+                                Value = defaultSegmentDescriptor.DefaultValue,
+                                StoredValue = defaultSegmentDescriptor.DefaultStoredValue
+                            });
                     }
 
                     var templateDescriptors = new List<UrlTemplateDescriptor>() { templateDescriptor };
@@ -83,7 +86,7 @@ namespace MainBit.Alias.Services
                     {
                         templateDescriptor.StoredPrefix = templateDescriptor.StoredPrefix.Replace(
                             string.Format("{{{0}}}", segment.Key),
-                            segment.Value);
+                            segment.Value.StoredValue);
                     }
                 }
                 return allTemplateDescriptors;
@@ -128,7 +131,7 @@ namespace MainBit.Alias.Services
                 foreach (var clonedUrlTemplateDescriptor in clonedUrlTemplateDescriptors)
                 {
                     clonedUrlTemplateDescriptor.BaseUrl =
-                        clonedUrlTemplateDescriptor.BaseUrl.Replace(string.Format("{{{0}}}", segment.Name), segmentValue);
+                        clonedUrlTemplateDescriptor.BaseUrl.Replace(string.Format("{{{0}}}", segment.Name), segmentValue.Value);
                     clonedUrlTemplateDescriptor.Segments.Add(segment.Name, segmentValue);
                 }
                 newUrlTemplateDescriptors.AddRange(clonedUrlTemplateDescriptors);

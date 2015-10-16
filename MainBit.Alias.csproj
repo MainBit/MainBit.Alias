@@ -92,6 +92,7 @@
   <ItemGroup>
     <Compile Include="AdminMenu.cs" />
     <Compile Include="Descriptors\DescribeUrlSegmentsContext.cs" />
+    <Compile Include="Descriptors\UrlSegmentValueDescriptor.cs" />
     <Compile Include="Extensions\RequestExtensions.cs" />
     <Compile Include="Helpers\UrlHelperExtensions.cs" />
     <Compile Include="Models\EnumUrlSegmentRecord.cs" />

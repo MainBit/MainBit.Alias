@@ -14,11 +14,13 @@ namespace MainBit.Alias.Descriptors
             return _segments;
         }
 
-        public DescribeUrlSegmentsContext Element(string name, IEnumerable<string> values, string defaultValue) {
+        public DescribeUrlSegmentsContext Element(string name, IEnumerable<UrlSegmentValueDescriptor> values, string defaultValue, string defaultStoredValue)
+        {
             _segments.Add(new UrlSegmentDescriptor() {
                 Name = name,
                 Values = values.ToList(),
-                DefaultValue = defaultValue
+                DefaultValue = defaultValue,
+                DefaultStoredValue = defaultStoredValue
             });
             return this;
         }

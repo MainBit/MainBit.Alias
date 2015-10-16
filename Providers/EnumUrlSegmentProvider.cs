@@ -1,4 +1,5 @@
-﻿using MainBit.Alias.Services;
+﻿using MainBit.Alias.Descriptors;
+using MainBit.Alias.Services;
 using Orchard.Caching;
 using System;
 using System.Collections.Generic;
@@ -21,10 +22,16 @@ namespace MainBit.Alias.Providers
             var enumUrlSegments = _enumUrlSegmentService.GetList();
             foreach (var enumUrlSegment in enumUrlSegments)
             {
+                var urlSegmentValueDescriptors = UrlSegmentValueDescriptorHelper.CreateList(
+                        enumUrlSegment.PossibleValues.Split(','),
+                        enumUrlSegment.PossibleStoredValues.Split(',')
+                    );
+
                 context.Element(
                     enumUrlSegment.Name,
-                    enumUrlSegment.PossibleValues.Split(','),
-                    enumUrlSegment.DefaultValue);
+                    urlSegmentValueDescriptors,
+                    enumUrlSegment.DefaultValue,
+                    enumUrlSegment.DefaultStoredValue);
             }
         }
 

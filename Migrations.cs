@@ -28,5 +28,20 @@ namespace MainBit.Alias
 
             return 2;
         }
+
+        public int UpdateFrom2()
+        {
+            SchemaBuilder.AlterTable("EnumUrlSegmentRecord",
+                table => table
+                    .AddColumn<string>("PossibleStoredValues", c => c.WithLength(255))
+                );
+
+            SchemaBuilder.AlterTable("EnumUrlSegmentRecord",
+                table => table
+                    .AddColumn<string>("DefaultStoredValue", c => c.WithLength(255))
+                );
+
+            return 3;
+        }
     }
 }
