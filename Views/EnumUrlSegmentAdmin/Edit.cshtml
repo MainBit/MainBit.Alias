@@ -20,15 +20,9 @@
         <span class="hint">@T("")</span>
     </fieldset>
     <fieldset>
-        @Html.LabelFor(m => m.PossibleValues, T("Values"))
-        @Html.TextBoxFor(m => m.PossibleValues, new { @class = "text large" })
-        @Html.ValidationMessageFor(m => m.PossibleValues)
-        <span class="hint">@T("Without default value")</span>
-    </fieldset>
-    <fieldset>
-        @Html.LabelFor(m => m.DefaultValue, T("Default value"))
-        @Html.TextBoxFor(m => m.DefaultValue, new { @class = "text medium" })
-        @Html.ValidationMessageFor(m => m.DefaultValue)
+        @Html.LabelFor(m => m.DisplayName, T("Display name"))
+        @Html.TextBoxFor(m => m.DisplayName, new { @class = "text large" })
+        @Html.ValidationMessageFor(m => m.DisplayName)
         <span class="hint">@T("")</span>
     </fieldset>
     <fieldset>

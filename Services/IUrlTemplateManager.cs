@@ -4,34 +4,53 @@ using Orchard.Caching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace MainBit.Alias.Services
 {
     public interface IUrlTemplateManager : IDependency {
-        List<UrlTemplateDescriptor> DescribeUrlTemplates();
         List<UrlSegmentDescriptor> DescribeUrlSegments();
+        List<UrlTemplateDescriptor> DescribeUrlTemplates();
     }
 
     public class UrlTemplateManager : IUrlTemplateManager
     {
         private readonly IEnumerable<IUrlSegmentProvider> _urlSegmentProviders;
-        private readonly IUrlTemplateService _urlTemplateService;
+        private readonly IUrlTemplateRepository _urlTemplateService;
         private readonly ICacheManager _cacheManager;
         private readonly ISignals _signals;
+        private readonly IUrlTemplateHelper _urlTemplateHelper;
 
         public UrlTemplateManager(IEnumerable<IUrlSegmentProvider> urlSegmentProviders,
-            IUrlTemplateService urlTemplateService,
+            IUrlTemplateRepository urlTemplateService,
             ICacheManager cacheManager,
-            ISignals signals)
+            ISignals signals,
+            IUrlTemplateHelper urlTemplateHelper)
         {
             _urlSegmentProviders = urlSegmentProviders;
             _urlTemplateService = urlTemplateService;
             _cacheManager = cacheManager;
             _signals = signals;
+            _urlTemplateHelper = urlTemplateHelper;
         }
 
         public static readonly string SignalUrlTemplatesChanged = "MainBit.Alias.UrlTemplates.Changed";
+
+        public List<UrlSegmentDescriptor> DescribeUrlSegments()
+        {
+            return _cacheManager.Get("MainBit.Alias.UrlSegments", acquire =>
+            {
+                MonitorChanged(acquire);
+
+                var describeUrlSegmentsContext = new DescribeUrlSegmentContext();
+                foreach (var urlSegmentProvider in _urlSegmentProviders)
+                {
+                    urlSegmentProvider.Describe(describeUrlSegmentsContext);
+                }
+                return describeUrlSegmentsContext.Describe();
+            });
+        }
 
         public List<UrlTemplateDescriptor> DescribeUrlTemplates()
         {
@@ -45,34 +64,32 @@ namespace MainBit.Alias.Services
 
                 foreach (var template in templates)
                 {
-                    var definedSegmentDescriptors = segmentDescriptors.Where(d =>
-                            template.BaseUrl.Contains(string.Format("{{{0}}}", d.Name))
-                            && d.Values.Count > 0);
+                    var templateDescriptor = new UrlTemplateDescriptor()
+                    {
+                        BaseUrl = template.BaseUrl,
+                        StoredPrefix = template.StoredPrefix ?? string.Empty,
+                    };
+
+                    // default values
                     var defaultSegmentDescriptors = segmentDescriptors.Where(d =>
                             !template.BaseUrl.Contains(string.Format("{{{0}}}", d.Name)));
 
-                    var templateDescriptor = new UrlTemplateDescriptor()
-                    {
-                        Template = template,
-                        BaseUrl = template.BaseUrl,
-                        StoredPrefix = template.StoredPrefix ?? string.Empty
-                    };
-
                     foreach (var defaultSegmentDescriptor in defaultSegmentDescriptors)
                     {
-                        templateDescriptor.BaseUrl.Replace(
-                            string.Format("{0}", defaultSegmentDescriptor.Name),
-                            defaultSegmentDescriptor.DefaultValue);
                         templateDescriptor.Segments.Add(
                             defaultSegmentDescriptor.Name,
-                            new UrlSegmentValueDescriptor {
-                                Value = defaultSegmentDescriptor.DefaultValue,
-                                StoredValue = defaultSegmentDescriptor.DefaultStoredValue
-                            });
+                            defaultSegmentDescriptor.DefaultValue);
                     }
 
-                    var templateDescriptors = new List<UrlTemplateDescriptor>() { templateDescriptor };
-                    templateDescriptors = GenerateSegmentsCombinations(templateDescriptors, definedSegmentDescriptors);
+                    // defined values
+                    var definedSegmentDescriptors = segmentDescriptors.Where(d =>
+                            template.BaseUrl.Contains(string.Format("{{{0}}}", d.Name))
+                            && d.Values.Count > 0);
+
+                    var templateDescriptors = GenerateSegmentsCombinations(
+                        _urlTemplateHelper.ParseContraints(template.Constraints).ToDictionary(d => d.Key, d => new Regex(d.Value)),
+                        new List<UrlTemplateDescriptor>() { templateDescriptor },
+                        definedSegmentDescriptors);
                     allTemplateDescriptors.AddRange(templateDescriptors);
                 }
 
@@ -93,31 +110,8 @@ namespace MainBit.Alias.Services
             });
         }
 
-        public List<UrlSegmentDescriptor> DescribeUrlSegments()
-        {
-            return _cacheManager.Get("MainBit.Alias.UrlSegments", acquire =>
-            {
-                MonitorChanged(acquire);
-
-                var describeUrlSegmentsContext = new DescribeUrlSegmentsContext();
-                foreach (var urlSegmentProvider in _urlSegmentProviders)
-                {
-                    urlSegmentProvider.Describe(describeUrlSegmentsContext);
-                }
-                return describeUrlSegmentsContext.Describe();
-            });
-        }
-
-        private void MonitorChanged(AcquireContext<string> acquire)
-        {
-            acquire.Monitor(_signals.When(SignalUrlTemplatesChanged));
-            foreach (var urlSegmentProvider in _urlSegmentProviders)
-            {
-                urlSegmentProvider.MonitorChanged(acquire);
-            }
-        }
-
         private List<UrlTemplateDescriptor> GenerateSegmentsCombinations(
+            IDictionary<string, Regex> contraints,
             List<UrlTemplateDescriptor> urlTemplateDescriptors,
             IEnumerable<UrlSegmentDescriptor> segmentDescriptors)
         {
@@ -125,8 +119,13 @@ namespace MainBit.Alias.Services
             if (segment == null) { return urlTemplateDescriptors; }
 
             var newUrlTemplateDescriptors = new List<UrlTemplateDescriptor>();
+
             foreach (var segmentValue in segment.Values)
             {
+                if (contraints.ContainsKey(segment.Name))
+                    if (!contraints[segment.Name].IsMatch(segmentValue.Value))
+                        continue;
+
                 var clonedUrlTemplateDescriptors = urlTemplateDescriptors.Select(d => (UrlTemplateDescriptor)d.Clone()).ToList();
                 foreach (var clonedUrlTemplateDescriptor in clonedUrlTemplateDescriptors)
                 {
@@ -136,7 +135,16 @@ namespace MainBit.Alias.Services
                 }
                 newUrlTemplateDescriptors.AddRange(clonedUrlTemplateDescriptors);
             }
-            return GenerateSegmentsCombinations(newUrlTemplateDescriptors, segmentDescriptors.Skip(1));
+            return GenerateSegmentsCombinations(contraints, newUrlTemplateDescriptors, segmentDescriptors.Skip(1));
+        }
+
+        private void MonitorChanged(AcquireContext<string> acquire)
+        {
+            acquire.Monitor(_signals.When(SignalUrlTemplatesChanged));
+            foreach (var urlSegmentProvider in _urlSegmentProviders)
+            {
+                urlSegmentProvider.MonitorChanged(acquire);
+            }
         }
     }
 }

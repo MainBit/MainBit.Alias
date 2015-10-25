@@ -11,5 +11,6 @@ namespace MainBit.Alias.Models
         public virtual int Position { get; set; }
         public virtual string BaseUrl { get; set; }
         public virtual string StoredPrefix { get; set; }
+        public virtual string Constraints { get; set; }
     }
 }

@@ -1,0 +1,44 @@
+﻿@using MainBit.Alias.Elements
+@using MainBit.Alias.ViewModels;
+@using Orchard.Layouts.Helpers
+@{
+    var element = (UrlSegment) Model.Element;
+    var viewModel = (UrlSegmentViewModel)Model.ViewModel;
+    var tagBuilder = TagBuilderExtensions.CreateElementTagBuilder(Model);
+    var guid = Guid.NewGuid();
+    
+    //tagBuilder.AddCssClass("cell");
+}
+@tagBuilder.StartElement
+
+<div class="dropdown">
+    <a href="#" id="url-segment-picker__link_@guid" class="text-gray-light target-modal border-inside dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+        <span class="img-icon-flag img-icon-flag_@(viewModel.CurrentValue != null ? viewModel.CurrentValue.Descriptor.Name.ToLower() : null)"></span><span class="border">@(viewModel.CurrentValue != null ? viewModel.CurrentValue.Descriptor.DisplayName : null)</span>
+    </a>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="url-segment-picker__link_@guid">
+        @foreach (var value in viewModel.Values)
+        {
+            if (value == viewModel.CurrentValue)
+            {
+                <li class="active">
+                    <span>
+                       @value.Descriptor.DisplayName
+                    </span>
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a href="@value.Url">
+                        @value.Descriptor.DisplayName
+                    </a>
+                </li>
+            }
+        }
+    </ul>
+
+
+
+</div>
+
+@tagBuilder.EndElement

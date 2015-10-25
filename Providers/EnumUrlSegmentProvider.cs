@@ -10,28 +10,29 @@ namespace MainBit.Alias.Providers
 {
     public class EnumUrlSegmentProvider : IUrlSegmentProvider
     {
-        private readonly IEnumUrlSegmentService _enumUrlSegmentService;
+        private readonly IEnumUrlSegmentRepository _enumUrlSegmentService;
 
-        public EnumUrlSegmentProvider(IEnumUrlSegmentService enumUrlSegmentService)
+        public EnumUrlSegmentProvider(IEnumUrlSegmentRepository enumUrlSegmentService)
         {
             _enumUrlSegmentService = enumUrlSegmentService;
         }
 
-        public void Describe(Descriptors.DescribeUrlSegmentsContext context)
+        public void Describe(Descriptors.DescribeUrlSegmentContext context)
         {
-            var enumUrlSegments = _enumUrlSegmentService.GetList();
-            foreach (var enumUrlSegment in enumUrlSegments)
-            {
-                var urlSegmentValueDescriptors = UrlSegmentValueDescriptorHelper.CreateList(
-                        enumUrlSegment.PossibleValues.Split(','),
-                        enumUrlSegment.PossibleStoredValues.Split(',')
-                    );
+            
+            foreach(var enumUrlSegment in _enumUrlSegmentService.GetList().Where(s => s.SegmentValues.Any())) {
 
-                context.Element(
-                    enumUrlSegment.Name,
-                    urlSegmentValueDescriptors,
-                    enumUrlSegment.DefaultValue,
-                    enumUrlSegment.DefaultStoredValue);
+                var describeFor = context.For(enumUrlSegment.Name, enumUrlSegment.DisplayName);
+                foreach (var segmentValue in enumUrlSegment.SegmentValues.OrderBy(v => v.Position))
+                {
+                    describeFor.Value(
+                        segmentValue.Name,
+                        segmentValue.DisplayName,
+                        segmentValue.UrlSegment,
+                        segmentValue.StoredPrefix,
+                        segmentValue.IsDefault
+                    );
+                }
             }
         }
 

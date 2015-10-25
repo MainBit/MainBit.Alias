@@ -57,6 +57,11 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\aspnetwebapi\System.Web.Http.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\lib\aspnetmvc\System.Web.Mvc.dll</HintPath>
@@ -83,23 +88,44 @@
       <Name>Orchard.Core</Name>
       <Private>false</Private>
     </ProjectReference>
+    <ProjectReference Include="..\MainBit.Utility\MainBit.Utility.csproj">
+      <Project>{34cb6685-15d4-4ef8-8791-2e1efac64339}</Project>
+      <Name>MainBit.Utility</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Orchard.Alias\Orchard.Alias.csproj">
       <Project>{475b6c45-b27c-438b-8966-908b9d6d1077}</Project>
       <Name>Orchard.Alias</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Orchard.Forms\Orchard.Forms.csproj">
+      <Project>{642a49d7-8752-4177-80d6-bfbbcfad3de0}</Project>
+      <Name>Orchard.Forms</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Orchard.Layouts\Orchard.Layouts.csproj">
+      <Project>{6bd8b2fa-f2e3-4ac8-a4c3-2925a653889a}</Project>
+      <Name>Orchard.Layouts</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminMenu.cs" />
-    <Compile Include="Descriptors\DescribeUrlSegmentsContext.cs" />
+    <Compile Include="Controllers\EnumUrlSegmentValueAdminController.cs" />
+    <Compile Include="Descriptors\DescribeUrlSegmentFor.cs" />
+    <Compile Include="Descriptors\DescribeUrlSegmentContext.cs" />
     <Compile Include="Descriptors\UrlSegmentValueDescriptor.cs" />
-    <Compile Include="Extensions\RequestExtensions.cs" />
-    <Compile Include="Helpers\UrlHelperExtensions.cs" />
+    <Compile Include="Drivers\UrlSegmentElementDriver.cs" />
+    <Compile Include="Elements\UrlSegment.cs" />
+    <Compile Include="Events\IUrlContextEventHandler.cs" />
+    <Compile Include="Events\ChangingUrlContext.cs" />
+    <Compile Include="Models\EnumUrlSegmentValueRecord.cs" />
     <Compile Include="Models\EnumUrlSegmentRecord.cs" />
     <Compile Include="Providers\EnumUrlSegmentProvider.cs" />
     <Compile Include="Routes\RedirectHandler.cs" />
     <Compile Include="Routes\RedirectRouteHandler.cs" />
-    <Compile Include="Services\IEnumUrlSegmentService.cs" />
+    <Compile Include="Services\IEnumUrlSegmentValueRepository.cs" />
+    <Compile Include="Services\IEnumUrlSegmentRepository.cs" />
     <Compile Include="Descriptors\UrlContext.cs" />
     <Compile Include="Descriptors\UrlTemplateDescriptor.cs" />
     <Compile Include="Routes\UrlTemplateRoutes.cs" />
@@ -108,14 +134,16 @@
     <Compile Include="Controllers\UrlTemplateController.cs" />
     <Compile Include="Controllers\UrlTemplateAdminController.cs" />
     <Compile Include="Controllers\EnumUrlSegmentAdminController.cs" />
-    <Compile Include="Helpers\HttpRequestExtensions.cs" />
-    <Compile Include="Helpers\StringExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Migrations.cs" />
     <Compile Include="Models\UrlTemplateRecord.cs" />
+    <Compile Include="Services\IUrlUtils.cs" />
     <Compile Include="Services\IUrlService.cs" />
     <Compile Include="Services\IUrlTemplateManager.cs" />
     <Compile Include="Services\IUrlSegmentProvider.cs" />
-    <Compile Include="Services\IUrlTemplateService.cs" />
+    <Compile Include="Services\IUrlTemplateHelper.cs" />
+    <Compile Include="Services\IUrlTemplateRepository.cs" />
+    <Compile Include="ViewModels\UrlSergemntViewModel.cs" />
     <Compile Include="ViewModels\EnumUrlSegmentIndexViewModel.cs" />
     <Compile Include="ViewModels\UrlTemplateIndexViewModel.cs" />
   </ItemGroup>
@@ -142,6 +170,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\EnumUrlSegmentAdmin\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EnumUrlSegmentValueAdmin\Add.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EnumUrlSegmentValueAdmin\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EnumUrlSegmentValueAdmin\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Elements\UrlSegment.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

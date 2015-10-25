@@ -13,8 +13,6 @@ namespace MainBit.Alias
         {
             Segments = new Dictionary<string, UrlSegmentValueDescriptor>();
         }
-
-        public UrlTemplateRecord Template { get; set; }
         public Dictionary<string, UrlSegmentValueDescriptor> Segments { get; set; }
         public string BaseUrl { get; set; }
         public string StoredPrefix { get; set; }

@@ -19,18 +19,21 @@ namespace MainBit.Alias.Controllers
     [Admin]
     public class UrlTemplateAdminController : Controller
     {
-        private readonly IUrlTemplateService _urlTemplateService;
+        private readonly IUrlTemplateRepository _urlTemplateService;
         private readonly IOrchardServices _orchardServices;
         private readonly ISignals _signals;
+        private readonly IUrlTemplateHelper _urlTemplateHelper;
 
         public UrlTemplateAdminController(
-            IUrlTemplateService urlTemplateService,
+            IUrlTemplateRepository urlTemplateService,
             IOrchardServices orchardServices,
-            ISignals signals)
+            ISignals signals,
+            IUrlTemplateHelper urlTemplateHelper)
         {
             _urlTemplateService = urlTemplateService;
             _orchardServices = orchardServices;
             _signals = signals;
+            _urlTemplateHelper = urlTemplateHelper;
 
             T = NullLocalizer.Instance;
         }
@@ -64,10 +67,20 @@ namespace MainBit.Alias.Controllers
 
             viewModel.BaseUrl = viewModel.BaseUrl.TrimSafe();
             viewModel.StoredPrefix = viewModel.StoredPrefix.TrimSafe();
+            viewModel.Constraints = viewModel.Constraints.TrimSafe();
 
             if (String.IsNullOrWhiteSpace(viewModel.BaseUrl))
             {
                 ModelState.AddModelError("BaseUrl", T("Base url can't be empty").Text);
+            }
+
+            try
+            {
+                var contraints = _urlTemplateHelper.ParseContraints(viewModel.Constraints);
+            }
+            catch
+            {
+                ModelState.AddModelError("Constraints", T("Constraints field is not valid.").Text);
             }
 
             if (!ModelState.IsValid)
@@ -97,11 +110,22 @@ namespace MainBit.Alias.Controllers
 
             viewModel.BaseUrl = viewModel.BaseUrl.TrimSafe();
             viewModel.StoredPrefix = viewModel.StoredPrefix.TrimSafe();
+            viewModel.Constraints = viewModel.Constraints.TrimSafe();
 
             if (String.IsNullOrWhiteSpace(viewModel.BaseUrl))
             {
                 ModelState.AddModelError("BaseUrl", T("Base url can't be empty").Text);
             }
+
+            try
+            {
+                var contraints = _urlTemplateHelper.ParseContraints(viewModel.Constraints);
+            }
+            catch {
+                ModelState.AddModelError("Constraints", T("Constraints field is not valid.").Text);
+            }
+
+            
 
             if (!ModelState.IsValid)
             {

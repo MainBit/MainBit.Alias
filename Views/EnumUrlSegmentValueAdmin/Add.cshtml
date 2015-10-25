@@ -1,0 +1,50 @@
+@model MainBit.Alias.Models.EnumUrlSegmentValueRecord
+@{
+    Layout.Title = T("Create enumeration URL segment value");
+}
+
+@using (Html.BeginFormAntiForgeryPost()) {
+    @Html.ValidationSummary()
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.EnumUrlSegmentRecord_Id)
+    <fieldset>
+        @Html.LabelFor(m => m.Position, T("Position"))
+        @Html.TextBoxFor(m => m.Position, new { type = "number", @class = "text small" })
+        @Html.ValidationMessageFor(m => m.Position)
+        <span class="hint">@T("")</span>
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.Name, T("Name"))
+        @Html.TextBoxFor(m => m.Name, new { @class = "text medium" })
+        @Html.ValidationMessageFor(m => m.Name)
+        <span class="hint">@T("")</span>
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.DisplayName, T("Display name"))
+        @Html.TextBoxFor(m => m.DisplayName, new { @class = "text medium" })
+        @Html.ValidationMessageFor(m => m.DisplayName)
+        <span class="hint">@T("")</span>
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.UrlSegment, T("Url segment"))
+        @Html.TextBoxFor(m => m.UrlSegment, new { @class = "text medium" })
+        @Html.ValidationMessageFor(m => m.UrlSegment)
+        <span class="hint">@T("")</span>
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.StoredPrefix, T("Stored prefix"))
+        @Html.TextBoxFor(m => m.StoredPrefix, new { @class = "text medium" })
+        @Html.ValidationMessageFor(m => m.StoredPrefix)
+        <span class="hint">@T("")</span>
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.IsDefault, T("Is default"))
+        @Html.CheckBoxFor(m => m.IsDefault)
+        @Html.ValidationMessageFor(m => m.IsDefault)
+        <span class="hint">@T("")</span>
+    </fieldset>
+    <fieldset>
+        <button class="primaryAction" type="submit">@T("Save")</button>
+        @Html.ActionLink(T("Cancel").ToString(), "Index", new { segmentId = Model.EnumUrlSegmentRecord_Id }, new { @class = "button" })
+    </fieldset>
+}

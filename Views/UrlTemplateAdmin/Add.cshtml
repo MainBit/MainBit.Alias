@@ -25,6 +25,12 @@
         <span class="hint">@T("")</span>
     </fieldset>
     <fieldset>
+        @Html.LabelFor(m => m.Constraints, T("Constraints"))
+        @Html.TextBoxFor(m => m.Constraints, new { @class = "text large" })
+        @Html.ValidationMessageFor(m => m.Constraints)
+        <span class="hint">@T("Regex constrains. Example: culture=\"^en-US$\",something=\"a|b\"")</span>
+    </fieldset>
+    <fieldset>
         <button class="primaryAction" type="submit">@T("Save")</button>
         @Html.ActionLink(T("Cancel").ToString(), "Index", null, new { @class = "button" })
     </fieldset>

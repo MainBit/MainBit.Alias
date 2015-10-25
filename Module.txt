@@ -10,4 +10,4 @@ Features:
 		Name: MainBit.Alias
         Description: Provides services to manage base url.
 		Category: Content
-		Dependencies: Orchard.Alias
+		Dependencies: Orchard.Alias, Orchard.Layouts

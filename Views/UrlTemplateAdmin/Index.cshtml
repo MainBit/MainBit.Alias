@@ -19,6 +19,10 @@
             <th>
                 @T("Stored prefix")
             </th>
+            <th>
+                @T("Constraints")
+            </th>
+            
             <th scope="col">
                 @T("Actions")
             </th>
@@ -36,6 +40,9 @@
                 </td>
                 <td>
                     @template.StoredPrefix
+                </td>
+                <td>
+                    @template.Constraints
                 </td>
                 <td>
                     @Html.ActionLink(T("Edit").Text, "Edit", "UrlTemplateAdmin", new { id = @template.Id, area = "MainBit.Alias" }, null)

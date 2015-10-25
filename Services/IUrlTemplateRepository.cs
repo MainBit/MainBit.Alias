@@ -9,54 +9,54 @@ using System.Web;
 
 namespace MainBit.Alias.Services
 {
-    public interface IEnumUrlSegmentService : IDependency
+    public interface IUrlTemplateRepository : IDependency
     {
-        List<EnumUrlSegmentRecord> GetList();
-        EnumUrlSegmentRecord Get(int id);
-        void Create(EnumUrlSegmentRecord record);
-        void Update(EnumUrlSegmentRecord record);
-        void Delete(EnumUrlSegmentRecord record);
+        List<UrlTemplateRecord> GetList();
+        UrlTemplateRecord Get(int id);
+        void Create(UrlTemplateRecord record);
+        void Update(UrlTemplateRecord record);
+        void Delete(UrlTemplateRecord record);
     }
 
-    public class EnumUrlSegmentService : IEnumUrlSegmentService
+    public class UrlTemplateRepository: IUrlTemplateRepository
     {
-        private readonly IRepository<EnumUrlSegmentRecord> _repository;
+        private readonly IRepository<UrlTemplateRecord> _repository;
         private readonly ISignals _signals;
 
-        public EnumUrlSegmentService(IRepository<EnumUrlSegmentRecord> repository,
+        public UrlTemplateRepository(IRepository<UrlTemplateRecord> repository,
             ISignals signals)
         {
             _repository = repository;
             _signals = signals;
         }
 
-        public List<EnumUrlSegmentRecord> GetList()
+        public List<UrlTemplateRecord> GetList()
         {
             return _repository.Table.OrderBy(p => p.Position).ToList();
         }
 
-        public EnumUrlSegmentRecord Get(int id)
+        public UrlTemplateRecord Get(int id)
         {
             return _repository.Get(id);
         }
 
-        public void Create(EnumUrlSegmentRecord record)
+        public void Create(UrlTemplateRecord record)
         {
             _repository.Create(record);
             _signals.Trigger(UrlTemplateManager.SignalUrlTemplatesChanged);
         }
 
-        public void Update(EnumUrlSegmentRecord record)
+        public void Update(UrlTemplateRecord record)
         {
             _repository.Update(record);
             _signals.Trigger(UrlTemplateManager.SignalUrlTemplatesChanged);
         }
 
-        public void Delete(EnumUrlSegmentRecord record)
+        public void Delete(UrlTemplateRecord record)
         {
             _repository.Delete(record);
             _signals.Trigger(UrlTemplateManager.SignalUrlTemplatesChanged);
         }
-
+        
     }
 }

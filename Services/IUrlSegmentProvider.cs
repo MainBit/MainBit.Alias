@@ -10,7 +10,7 @@ namespace MainBit.Alias
 {
     public interface IUrlSegmentProvider : IDependency
     {
-        void Describe(DescribeUrlSegmentsContext context);
+        void Describe(DescribeUrlSegmentContext context);
         void MonitorChanged(AcquireContext<string> acquire);
     }
 }

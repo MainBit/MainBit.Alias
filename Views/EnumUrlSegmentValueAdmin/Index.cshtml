@@ -1,0 +1,65 @@
+﻿@model MainBit.Alias.Models.EnumUrlSegmentRecord
+@{
+    Layout.Title = T("Values for {0} enumeration URL segment", Model.Name);
+}
+@Html.AntiForgeryTokenOrchard()
+<div class="manage">
+    @Html.ActionLink(T("Add").Text, "Add", new { segmentId = Model.Id, Area = "MainBit.Alias" }, new { @class = "button primaryAction" })
+</div>
+<table class="items">
+    <thead>
+        <tr>
+            <th scope="col">
+                @T("Position")
+            </th>
+            <th scope="col">
+                @T("Name")
+            </th>
+            <th scope="col">
+                @T("DisplayName")
+            </th>
+            <th scope="col">
+                @T("UrlSegment")
+            </th>
+            <th scope="col">
+                @T("StoredPrefix")
+            </th>
+            <th>
+                @T("IsDefault")
+            </th>
+            <th>
+                @T("Actions")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var segmentValue in Model.SegmentValues)
+        {
+            <tr>
+                <td>
+                    @segmentValue.Position
+                </td>
+                <td>
+                    @segmentValue.Name
+                </td>
+                <td>
+                    @segmentValue.DisplayName
+                </td>
+                <td>
+                    @segmentValue.UrlSegment
+                </td>
+                <td>
+                    @segmentValue.StoredPrefix
+                </td>
+                <td>
+                    @segmentValue.IsDefault
+                </td>
+                <td>
+                    @Html.ActionLink(T("Edit").Text, "Edit", "EnumUrlSegmentValueAdmin", new { id = @segmentValue.Id, area = "MainBit.Alias" }, null)
+                    @T(" | ")
+                    @Html.ActionLink(T("Delete").Text, "Delete", "EnumUrlSegmentValueAdmin", new { id = @segmentValue.Id, area = "MainBit.Alias" }, new { data_unsafe_url = T("Are you sure you want to delete this segment value?") })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -18,11 +18,11 @@ namespace MainBit.Alias.Controllers
     [Themed]
     public class UrlTemplateController : Controller
     {
-        private readonly IUrlTemplateService _baseUrlTemplateService;
+        private readonly IUrlTemplateRepository _baseUrlTemplateService;
         private readonly IOrchardServices _orchardServices;
 
         public UrlTemplateController(
-            IUrlTemplateService baseUrlTemplateService,
+            IUrlTemplateRepository baseUrlTemplateService,
             IOrchardServices orchardServices)
         {
             _baseUrlTemplateService = baseUrlTemplateService;

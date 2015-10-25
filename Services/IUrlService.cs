@@ -8,60 +8,62 @@ using MainBit.Alias.Helpers;
 using Orchard.Logging;
 using Orchard.Mvc;
 using MainBit.Alias.Descriptors;
+using Orchard.Environment.Configuration;
+using Orchard.Mvc.Routes;
+using MainBit.Alias.Events;
+using Orchard.ContentManagement;
 
 namespace MainBit.Alias.Services
 {
     public interface IUrlService : IDependency
     {
-        UrlContext CurrentUrlContext();
-        //UrlContext GetContext(HttpRequestBase httpRequest);
-        UrlContext GetContext(string baseUrl, string virtualPath = "");
-        UrlContext GetContext(Dictionary<string, string> segments, string virtualPath = "");
+        UrlContext GetCurrentContext();
+        UrlContext GetContext(string baseUrl, string virtualPath);
+        //UrlContext GetContext(Dictionary<string, string> segments, string virtualPath = "");
+        UrlContext ChangeSegmentValues(UrlContext urlContext, object segments, IContent content = null);
+        UrlContext ChangeSegmentValues(UrlContext urlContext, IDictionary<string, string> segments, IContent content = null);
 
-        UrlContext ChangeSegmentValues(UrlContext urlContext, object segments);
-        UrlContext ChangeSegmentValues(UrlContext urlContext, IDictionary<string, string> segments);
-
-        //string GetDisplayVirtualPath(UrlContext urlContext, string virtualPath);
-        //string GetStoredVirtualPath(UrlContext urlContext, string virtualPath);
 
         bool IsUrlTemplatesConfigured();
     }
     public class UrlService : IUrlService
     {
+        private readonly IUrlContextEventHandler _urlContextEventHandler;
         private readonly IUrlTemplateManager _urlTemplateManager;
         private readonly IHttpContextAccessor _hta;
+        private readonly ShellSettings _shellSettings;
+        private readonly IWorkContextAccessor _wca;
+        private readonly IUrlUtils _urlUtils;
+        
 
-        public UrlService(IUrlTemplateManager urlTemplateManager,
-            IHttpContextAccessor hta)
+        public UrlService(
+            IUrlContextEventHandler urlContextEventHandler,
+            IUrlTemplateManager urlTemplateManager,
+            IHttpContextAccessor hta,
+            ShellSettings shellSettings,
+            IWorkContextAccessor wca,
+            IUrlUtils urlUtils)
         {
+            _urlContextEventHandler = urlContextEventHandler;
             _urlTemplateManager = urlTemplateManager;
             _hta = hta;
+            _wca = wca;
+            _shellSettings = shellSettings;
+            _urlUtils = urlUtils;
             Logger = NullLogger.Instance;
+
         }
 
         public ILogger Logger { get; set; }
 
         private UrlContext _currentUrlContext = null;
-        public UrlContext CurrentUrlContext()
+        public UrlContext GetCurrentContext()
         {
             if (_currentUrlContext == null)
             {
-                var httpContext = _hta.Current();
-
-                var baseUrl = httpContext.Request.GetBaseUrl();
-                var virtualPath = httpContext.Request.AppRelativeCurrentExecutionFilePath.Substring(2);
-                // when command is running from command line than HttpContextBase is HttpContextPlaceholder (that doesn't implement PathInfo)
-                try
-                {
-                    virtualPath += httpContext.Request.PathInfo;
-                }
-                catch (System.NotImplementedException e)
-                {
-
-                }
-                
-
-                _currentUrlContext = GetContext(baseUrl, virtualPath);
+                _currentUrlContext = GetContext(
+                    _urlUtils.GetBaseUrl(),
+                    _urlUtils.GetVirtualPath());
             }
             return _currentUrlContext;
         }
@@ -72,17 +74,6 @@ namespace MainBit.Alias.Services
 
             var templateDescriptors = allTemplateDescriptors.Where(d =>
                 d.BaseUrl.Equals(baseUrl, StringComparison.InvariantCultureIgnoreCase)).ToList();
-
-            return BuildUrlContext(templateDescriptors, virtualPath);
-        }
-
-        public UrlContext GetContext(Dictionary<string, string> segments, string virtualPath)
-        {
-            var allTemplateDescriptors = _urlTemplateManager.DescribeUrlTemplates();
-
-            var templateDescriptors = allTemplateDescriptors.Where(d =>
-                d.Segments.All(s => segments.ContainsKey(s.Key) && segments[s.Key] == s.Value.Value)
-                && d.Segments.Count == segments.Count).ToList();
 
             return BuildUrlContext(templateDescriptors, virtualPath);
         }
@@ -98,83 +89,51 @@ namespace MainBit.Alias.Services
             return BuildUrlContext(templateDescriptors, virtualPath);
         }
 
-        //public string GetDisplayVirtualPath(UrlContext urlContext, string virtualPath)
-        //{
-        //    if (urlContext == null
-        //        || string.IsNullOrWhiteSpace(urlContext.Descriptor.Template.StoredVirtualPath)
-        //        || virtualPath == null)
-        //    {
-        //        return virtualPath; 
-        //    }
-
-        //    // work only for template like this {lang}/{virtualPath}
-        //    foreach (var segment in urlContext.Descriptor.Segments)
-        //    {
-        //        if (urlContext.Descriptor.Template.StoredVirtualPath.StartsWith(
-        //            string.Format("{{{0}}}/", segment.Key), StringComparison.InvariantCultureIgnoreCase) &&
-        //            virtualPath.StartsWith(segment.Value, StringComparison.InvariantCultureIgnoreCase)
-        //            )
-        //        {
-        //            return virtualPath.Substring(segment.Value.Length).TrimStart('/');
-        //        }
-        //    }
-
-        //    return virtualPath;
-        //}
-
-        //public string GetStoredVirtualPath(UrlContext urlContext, string virtualPath)
-        //{
-        //    if (urlContext == null
-        //        || string.IsNullOrWhiteSpace(urlContext.Descriptor.Template.StoredVirtualPath)
-        //        || virtualPath == null)
-        //    {
-        //        return virtualPath;
-        //    }
-
-        //    // work only for template like this {lang}/{virtualPath}
-        //    foreach (var segment in urlContext.Descriptor.Segments)
-        //    {
-        //        if (urlContext.Descriptor.Template.StoredVirtualPath.StartsWith(
-        //            string.Format("{{{0}}}/", segment.Key), StringComparison.InvariantCultureIgnoreCase) &&
-        //            !virtualPath.StartsWith(segment.Value, StringComparison.InvariantCultureIgnoreCase)
-        //            )
-        //        {
-        //            return segment.Value + (string.IsNullOrEmpty(virtualPath) ? "" : "/" + virtualPath);
-        //        }
-        //    }
-
-        //    return virtualPath;
-        //}
-
-        public UrlContext ChangeSegmentValues(UrlContext urlContext, object segments)
+        public UrlContext ChangeSegmentValues(UrlContext urlContext, object segments, IContent content = null)
         {
             return ChangeSegmentValues(urlContext, new RouteValueDictionary(segments));
         }
 
-        public UrlContext ChangeSegmentValues(UrlContext urlContext, IDictionary<string, string> segments)
+        public UrlContext ChangeSegmentValues(UrlContext urlContext, IDictionary<string, string> segments, IContent content = null)
         {
-            if (urlContext == null) { return null; }
+            if (urlContext == null) return null;
 
             var segmentDescriptors = _urlTemplateManager.DescribeUrlSegments();
             var newSegments = urlContext.Descriptor.Segments.ToDictionary(
                 entry => entry.Key,
                 entry => entry.Value.TypedClone());
 
+            var changeUrlContext = new ChangingUrlContext() {
+                UrlContext = urlContext,
+                Content = content
+            };
+
             foreach (var changedSegment in segments)
             {
-                var sementDescriptor = segmentDescriptors.FirstOrDefault(d => d.Name == changedSegment.Key);
-                if (sementDescriptor == null)
+                var segmentDescriptor = segmentDescriptors.FirstOrDefault(d => d.Name == changedSegment.Key);
+                if (segmentDescriptor == null)
                 {
                     continue;
                 }
 
-                newSegments[changedSegment.Key] =
-                    changedSegment.Value == null || changedSegment.Value.ToString() == string.Empty
-                    ? sementDescriptor.GetDefaultValue()
-                    : sementDescriptor.Values.First(sd => sd.Value == changedSegment.Value);
+                var currentValue = newSegments[changedSegment.Key];
+                var newValue = string.IsNullOrEmpty(changedSegment.Value)
+                    ? segmentDescriptor.DefaultValue
+                    : segmentDescriptor.Values.First(sd => sd.Value == changedSegment.Value);
+
+                newSegments[changedSegment.Key] = newValue;
+
+                changeUrlContext.ChangingSegments.Add(new ChangingUrlSegmentContext()
+                {
+                    UrlSegmentDescriptor = segmentDescriptor,
+                    CurrentValue = currentValue,
+                    NewValue = newValue
+                });
             }
 
-            return GetContext(newSegments, "");
+            _urlContextEventHandler.Changing(changeUrlContext);
+
+            return GetContext(newSegments, changeUrlContext.NewDisplayVirtualPath);
         }
 
         public bool IsUrlTemplatesConfigured()
@@ -189,7 +148,6 @@ namespace MainBit.Alias.Services
             if (descriptors.Count > 1)
             {
                 Logger.Debug(string.Format("Duplicate base url template for {0}", descriptors[0].BaseUrl));
-                // return null
             }
 
             var desciptor = descriptors[0];
@@ -232,6 +190,7 @@ namespace MainBit.Alias.Services
                 StoredVirtualPath = (desciptor.StoredPrefix + "/" + virtualPath).Trim('/'),
                 DisplayVirtualPath = virtualPath
             };
-        } 
+        }
+
     }
 }

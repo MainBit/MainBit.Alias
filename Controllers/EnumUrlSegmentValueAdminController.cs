@@ -16,16 +16,19 @@ using System.Web.Mvc;
 namespace MainBit.Alias.Controllers
 {
     [Admin]
-    public class EnumUrlSegmentAdminController : Controller
+    public class EnumUrlSegmentValueAdminController : Controller
     {
-        private readonly IEnumUrlSegmentRepository _enumUrlSegmentService;
+        private readonly IEnumUrlSegmentRepository _enumUrlSegmentRepository;
+        private readonly IEnumUrlSegmentValueRepository _enumUrlSegmentValueRepository;
         private readonly IOrchardServices _orchardServices;
 
-        public EnumUrlSegmentAdminController(
-            IEnumUrlSegmentRepository enumUrlSegmentService,
+        public EnumUrlSegmentValueAdminController(
+            IEnumUrlSegmentRepository enumUrlSegmentRepository,
+            IEnumUrlSegmentValueRepository enumUrlSegmentValueRepository,
             IOrchardServices orchardServices)
         {
-            _enumUrlSegmentService = enumUrlSegmentService;
+            _enumUrlSegmentRepository = enumUrlSegmentRepository;
+            _enumUrlSegmentValueRepository = enumUrlSegmentValueRepository;
             _orchardServices = orchardServices;
 
             T = NullLocalizer.Instance;
@@ -33,30 +36,29 @@ namespace MainBit.Alias.Controllers
 
         public Localizer T { get; set; }
 
-        public ActionResult Index()
+        public ActionResult Index(int segmentId)
         {
             if (!_orchardServices.Authorizer.Authorize(StandardPermissions.SiteOwner, T("Not authorized to manage enum url segments")))
                 return new HttpUnauthorizedResult();
 
-            var viewModel = new EnumUrlSegmentIndexViewModel()
-            {
-                Templates = _enumUrlSegmentService.GetList()
+            var segment = _enumUrlSegmentRepository.Get(segmentId);
+            return View(segment);
+        }
+
+        public ActionResult Add(int segmentId)
+        {
+            if (!_orchardServices.Authorizer.Authorize(StandardPermissions.SiteOwner, T("Not authorized to manage enum url segments")))
+                return new HttpUnauthorizedResult();
+
+            var viewModel = new EnumUrlSegmentValueRecord() {
+                EnumUrlSegmentRecord_Id = segmentId
             };
 
             return View(viewModel);
         }
 
-        public ActionResult Add()
-        {
-            if (!_orchardServices.Authorizer.Authorize(StandardPermissions.SiteOwner, T("Not authorized to manage enum url segments")))
-                return new HttpUnauthorizedResult();
-
-            var viewModel = new EnumUrlSegmentRecord();
-            return View(viewModel);
-        }
-
         [HttpPost]
-        public ActionResult Add(EnumUrlSegmentRecord viewModel)
+        public ActionResult Add(int segmentId, EnumUrlSegmentValueRecord viewModel)
         {
             if (!_orchardServices.Authorizer.Authorize(StandardPermissions.SiteOwner, T("Not authorized to manage enum url segments")))
                 return new HttpUnauthorizedResult();
@@ -66,9 +68,11 @@ namespace MainBit.Alias.Controllers
                 return View(viewModel);
             }
 
-            _enumUrlSegmentService.Create(viewModel);
+            var segment = _enumUrlSegmentRepository.Get(segmentId);
+            viewModel.EnumUrlSegmentRecord_Id = segment.Id;
+            segment.SegmentValues.Add(viewModel);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { segmentId = segmentId });
         }
 
         public ActionResult Edit(int id)
@@ -76,12 +80,13 @@ namespace MainBit.Alias.Controllers
             if (!_orchardServices.Authorizer.Authorize(StandardPermissions.SiteOwner, T("Not authorized to manage enum url segments")))
                 return new HttpUnauthorizedResult();
 
-            var viewModel = _enumUrlSegmentService.Get(id);
+            var viewModel = _enumUrlSegmentValueRepository.Get(id);
+
             return View(viewModel);
         }
 
         [HttpPost]
-        public ActionResult Edit(EnumUrlSegmentRecord viewModel)
+        public ActionResult Edit(EnumUrlSegmentValueRecord viewModel)
         {
             if (!_orchardServices.Authorizer.Authorize(StandardPermissions.SiteOwner, T("Not authorized to manage enum url segments")))
                 return new HttpUnauthorizedResult();
@@ -91,9 +96,9 @@ namespace MainBit.Alias.Controllers
                 return View(viewModel);
             }
 
-            _enumUrlSegmentService.Update(viewModel);
+            _enumUrlSegmentValueRepository.Update(viewModel);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { segmentId = viewModel.EnumUrlSegmentRecord_Id });
         }
 
         public ActionResult Delete(int id)
@@ -101,9 +106,9 @@ namespace MainBit.Alias.Controllers
             if (!_orchardServices.Authorizer.Authorize(StandardPermissions.SiteOwner, T("Not authorized to manage enum url segments")))
                 return new HttpUnauthorizedResult();
 
-            var viewModel = _enumUrlSegmentService.Get(id);
-            _enumUrlSegmentService.Delete(viewModel);
-            return RedirectToAction("Index");
+            var viewModel = _enumUrlSegmentValueRepository.Get(id);
+            _enumUrlSegmentValueRepository.Delete(viewModel);
+            return RedirectToAction("Index", new { segmentId = viewModel.EnumUrlSegmentRecord_Id });
         }
     }
 }

@@ -1,47 +1,60 @@
 ﻿using Orchard.Data.Migration;
+using Orchard.ContentManagement.MetaData;
 
 namespace MainBit.Alias
 {
     public class Migrations: DataMigrationImpl {
         public int Create() {
+
             SchemaBuilder.CreateTable("UrlTemplateRecord",
                 table => table
                     .Column<int>("Id", column => column.PrimaryKey().Identity())
                     .Column<int>("Position")
                     .Column<string>("BaseUrl", c => c.WithLength(255))
                     .Column<string>("StoredPrefix", c => c.WithLength(255))
+                    .Column<string>("Constraints", c => c.WithLength(2048))
                 );
 
-            return 1;
-        }
-
-        public int UpdateFrom1()
-        {
             SchemaBuilder.CreateTable("EnumUrlSegmentRecord",
                 table => table
                     .Column<int>("Id", column => column.PrimaryKey().Identity())
                     .Column<int>("Position")
                     .Column<string>("Name", c => c.WithLength(255))
-                    .Column<string>("PossibleValues", c => c.WithLength(255))
-                    .Column<string>("DefaultValue", c => c.WithLength(255))
+                    .Column<string>("DisplayName", c => c.WithLength(255))
                 );
 
-            return 2;
+            SchemaBuilder.CreateTable("EnumUrlSegmentValueRecord",
+                table => table
+                    .Column<int>("Id", column => column.PrimaryKey().Identity())
+                    .Column<int>("EnumUrlSegmentRecord_Id")
+                    .Column<int>("Position")
+                    .Column<string>("Name", c => c.WithLength(255))
+                    .Column<string>("DisplayName", c => c.WithLength(255))
+                    .Column<string>("UrlSegment", c => c.WithLength(255))
+                    .Column<string>("StoredPrefix", c => c.WithLength(255))
+                    .Column<bool>("IsDefault", c => c.WithLength(255))
+                );
+
+            return 5;
         }
 
-        public int UpdateFrom2()
+        public int UpdateFrom5()
         {
-            SchemaBuilder.AlterTable("EnumUrlSegmentRecord",
-                table => table
-                    .AddColumn<string>("PossibleStoredValues", c => c.WithLength(255))
+
+            ContentDefinitionManager.AlterTypeDefinition("UrlSegmentWidget",
+                cfg => cfg
+                    .WithPart("CommonPart",
+                        p => p
+                            .WithSetting("OwnerEditorSettings.ShowOwnerEditor", "false")
+                            .WithSetting("DateEditorSettings.ShowDateEditor", "false"))
+                    .WithPart("WidgetPart")
+                    .WithPart("ElementWrapperPart",
+                        p => p
+                            .WithSetting("ElementWrapperPartSettings.ElementTypeName", "MainBit.Alias.Elements.UrlSegment"))
+                    .WithSetting("Stereotype", "Widget")
                 );
 
-            SchemaBuilder.AlterTable("EnumUrlSegmentRecord",
-                table => table
-                    .AddColumn<string>("DefaultStoredValue", c => c.WithLength(255))
-                );
-
-            return 3;
+            return 6;
         }
     }
 }
