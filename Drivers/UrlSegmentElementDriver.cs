@@ -45,7 +45,7 @@ namespace Orchard.Layouts.Drivers {
             }
         }
 
-        protected override void OnDisplaying(UrlSegment element, ElementDisplayContext context)
+        protected override void OnDisplaying(UrlSegment element, ElementDisplayingContext context)
         {
             context.ElementShape.Metadata.Alternates.Add(String.Format("Elements_{0}_SegmentName__{1}", element.GetType().Name, element.SegmentName.ToLower()));
 
