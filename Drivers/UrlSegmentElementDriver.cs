@@ -70,8 +70,11 @@ namespace Orchard.Layouts.Drivers {
                 {
                     var newUrlContext = _urlService.ChangeSegmentValues(
                         currentUrlContext,
-                        new Dictionary<string, string> { { segment.Name, segmentValue.Value } },
+                        new Dictionary<string, string> { { segment.Name, segmentValue.Name } },
                         currentContent);
+
+                    if (newUrlContext == null) { continue; }
+
                     viewModel.Values.Add(new UrlSegmentValueDescriptorEntry()
                     {
                         Descriptor = segmentValue,

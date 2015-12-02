@@ -4,6 +4,7 @@ using MainBit.Alias.Services;
 using MainBit.Alias.ViewModels;
 using Orchard;
 using Orchard.Caching;
+using Orchard.ContentManagement;
 using Orchard.Localization;
 using Orchard.Security;
 using Orchard.UI.Admin;
@@ -16,7 +17,7 @@ using System.Web.Mvc;
 namespace MainBit.Alias.Controllers
 {
     [Admin]
-    public class EnumUrlSegmentAdminController : Controller
+    public class EnumUrlSegmentAdminController : Controller, IUpdateModel
     {
         private readonly IEnumUrlSegmentRepository _enumUrlSegmentService;
         private readonly IOrchardServices _orchardServices;
@@ -91,9 +92,16 @@ namespace MainBit.Alias.Controllers
                 return View(viewModel);
             }
 
-            _enumUrlSegmentService.Update(viewModel);
-
-            return RedirectToAction("Index");
+            var model = _enumUrlSegmentService.Get(viewModel.Id);
+            if (TryUpdateModel(model))
+            {
+                _enumUrlSegmentService.Update(model);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(viewModel);
+            }
         }
 
         public ActionResult Delete(int id)
@@ -104,6 +112,16 @@ namespace MainBit.Alias.Controllers
             var viewModel = _enumUrlSegmentService.Get(id);
             _enumUrlSegmentService.Delete(viewModel);
             return RedirectToAction("Index");
+        }
+
+        bool IUpdateModel.TryUpdateModel<TModel>(TModel model, string prefix, string[] includeProperties, string[] excludeProperties)
+        {
+            return TryUpdateModel(model, prefix, includeProperties, excludeProperties);
+        }
+
+        void IUpdateModel.AddModelError(string key, LocalizedString errorMessage)
+        {
+            ModelState.AddModelError(key, errorMessage.Text);
         }
     }
 }

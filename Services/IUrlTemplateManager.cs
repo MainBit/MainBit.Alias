@@ -72,7 +72,7 @@ namespace MainBit.Alias.Services
 
                     // default values
                     var defaultSegmentDescriptors = segmentDescriptors.Where(d =>
-                            !template.BaseUrl.Contains(string.Format("{{{0}}}", d.Name)));
+                            !template.BaseUrl.Contains(string.Format("{{{0}}}", d.Name)) && d.DefaultValue != null);
 
                     foreach (var defaultSegmentDescriptor in defaultSegmentDescriptors)
                     {
@@ -122,8 +122,12 @@ namespace MainBit.Alias.Services
 
             foreach (var segmentValue in segment.Values)
             {
+                // default value can't be in url
+                if (segmentValue == segment.DefaultValue)
+                    continue;
+
                 if (contraints.ContainsKey(segment.Name))
-                    if (!contraints[segment.Name].IsMatch(segmentValue.Value))
+                    if (!contraints[segment.Name].IsMatch(segmentValue.Name))
                         continue;
 
                 var clonedUrlTemplateDescriptors = urlTemplateDescriptors.Select(d => (UrlTemplateDescriptor)d.Clone()).ToList();

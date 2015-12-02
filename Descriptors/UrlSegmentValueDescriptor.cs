@@ -7,8 +7,9 @@ namespace MainBit.Alias.Descriptors
 {
     public class UrlSegmentValueDescriptor : ICloneable
     {
-        public virtual string Name { get; set; }
-        public virtual string DisplayName { get; set; }
+        public string Name { get; set; }
+        public string DisplayName { get; set; }
+        public int Position { get; set; }
         public string Value { get; set; }
         public string StoredValue { get; set; }
 

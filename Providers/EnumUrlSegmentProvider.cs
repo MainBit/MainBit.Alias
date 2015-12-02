@@ -22,12 +22,13 @@ namespace MainBit.Alias.Providers
             
             foreach(var enumUrlSegment in _enumUrlSegmentService.GetList().Where(s => s.SegmentValues.Any())) {
 
-                var describeFor = context.For(enumUrlSegment.Name, enumUrlSegment.DisplayName);
-                foreach (var segmentValue in enumUrlSegment.SegmentValues.OrderBy(v => v.Position))
+                var describeFor = context.For(enumUrlSegment.Name, enumUrlSegment.DisplayName, enumUrlSegment.Position);
+                foreach (var segmentValue in enumUrlSegment.SegmentValues)
                 {
                     describeFor.Value(
                         segmentValue.Name,
                         segmentValue.DisplayName,
+                        segmentValue.Position,
                         segmentValue.UrlSegment,
                         segmentValue.StoredPrefix,
                         segmentValue.IsDefault

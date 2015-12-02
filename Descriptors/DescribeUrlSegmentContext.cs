@@ -14,18 +14,20 @@ namespace MainBit.Alias.Descriptors
             return _describes.Select(d => new UrlSegmentDescriptor() {
                 Name = d.Key,
                 DisplayName = d.Value.DisplayName,
-                Values = d.Value.SegmentValues,
+                Position = d.Value.Position,
+                Values = d.Value.SegmentValues.OrderBy(v => v.Position).ToList(),
                 DefaultValue = d.Value.DefaultSegmentValue,
             })
+            .OrderBy(s => s.Position)
             .ToList();
         }
 
-        public DescribeUrlSegmentFor For(string name, string displayName)
+        public DescribeUrlSegmentFor For(string name, string displayName, int position)
         {
             DescribeUrlSegmentFor describeFor;
             if (!_describes.TryGetValue(name, out describeFor))
             {
-                describeFor = new DescribeUrlSegmentFor(displayName);
+                describeFor = new DescribeUrlSegmentFor(displayName, position);
                 _describes[name] = describeFor;
             }
             return describeFor;

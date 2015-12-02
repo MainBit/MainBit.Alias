@@ -10,6 +10,7 @@ namespace MainBit.Alias.Descriptors
     {
         public string Name { get; set; }
         public string DisplayName { get; set; }
+        public int Position { get; set; }
         public List<UrlSegmentValueDescriptor> Values { get; set; }
         public UrlSegmentValueDescriptor DefaultValue { get; set; }
     }

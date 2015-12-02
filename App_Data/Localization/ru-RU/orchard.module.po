@@ -1,10 +1,10 @@
-﻿#: "Orchard.Alias.AdminMenu"
-msgctxt "Orchard.Alias.AdminMenu"
+﻿#: "MainBit.Alias.AdminMenu"
+msgctxt "MainBit.Alias.AdminMenu"
 msgid "URL templates"
 msgstr "Шаблоны URL"
 
-#: "Orchard.Alias.AdminMenu"
-msgctxt "Orchard.Alias.AdminMenu"
+#: "MainBit.Alias.AdminMenu"
+msgctxt "MainBit.Alias.AdminMenu"
 msgid "Enumeration URL segments"
 msgstr "Сегменты URL с перечислением"
 

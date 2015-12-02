@@ -3,7 +3,7 @@ using Orchard.Localization;
 using Orchard.Security;
 using Orchard.UI.Navigation;
 
-namespace Orchard.Alias {
+namespace MainBit.Alias {
     public class AdminMenu : INavigationProvider {
         public Localizer T { get; set; }
 

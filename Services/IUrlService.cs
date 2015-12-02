@@ -82,8 +82,12 @@ namespace MainBit.Alias.Services
         {
             var allTemplateDescriptors = _urlTemplateManager.DescribeUrlTemplates();
 
+
+            // this is doesn't good because default values process like not default
+            // надо запрещать использовать явно указанный атрибут со значением по умолчанию
+            // либо через задание ограничений либо строго в коде (пока что это не сделано)
             var templateDescriptors = allTemplateDescriptors.Where(d =>
-                d.Segments.All(s => segments.ContainsKey(s.Key) && segments[s.Key].Value == s.Value.Value)
+                d.Segments.All(s => segments.ContainsKey(s.Key) && segments[s.Key].Name == s.Value.Name)
                 && d.Segments.Count == segments.Count).ToList();
 
             return BuildUrlContext(templateDescriptors, virtualPath);
@@ -91,7 +95,18 @@ namespace MainBit.Alias.Services
 
         public UrlContext ChangeSegmentValues(UrlContext urlContext, object segments, IContent content = null)
         {
-            return ChangeSegmentValues(urlContext, new RouteValueDictionary(segments));
+            return ChangeSegmentValues(urlContext, ToDictionary(segments), content);
+        }
+
+        private Dictionary<string, string> ToDictionary(object obj)
+        {
+            return obj.GetType().GetProperties().ToDictionary(
+                    x => x.Name,
+                    x =>
+                    {
+                        var value = x.GetGetMethod().Invoke(obj, null);
+                        return value != null ? value.ToString() : null;
+                    });
         }
 
         public UrlContext ChangeSegmentValues(UrlContext urlContext, IDictionary<string, string> segments, IContent content = null)
@@ -117,18 +132,15 @@ namespace MainBit.Alias.Services
                 }
 
                 var currentValue = newSegments[changedSegment.Key];
-                var newValue = string.IsNullOrEmpty(changedSegment.Value)
-                    ? segmentDescriptor.DefaultValue
-                    : segmentDescriptor.Values.First(sd => sd.Value == changedSegment.Value);
-
-                newSegments[changedSegment.Key] = newValue;
-
+                var newValue = segmentDescriptor.Values.First(sd => sd.Name == changedSegment.Value);
                 changeUrlContext.ChangingSegments.Add(new ChangingUrlSegmentContext()
                 {
                     UrlSegmentDescriptor = segmentDescriptor,
                     CurrentValue = currentValue,
                     NewValue = newValue
                 });
+
+                newSegments[changedSegment.Key] = newValue;
             }
 
             _urlContextEventHandler.Changing(changeUrlContext);
