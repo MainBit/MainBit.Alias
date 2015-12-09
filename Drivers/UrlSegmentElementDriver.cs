@@ -3,22 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Orchard.ContentManagement;
-using Orchard.Core.Title.Models;
-using Orchard.Data;
-using Orchard.DisplayManagement;
-using Orchard.Environment.Extensions;
-using Orchard.Forms.Services;
-using Orchard.Layouts.Elements;
 using Orchard.Layouts.Framework.Display;
 using Orchard.Layouts.Framework.Drivers;
-using Orchard.UI.Navigation;
 using Orchard.Layouts.Helpers;
 using DescribeContext = Orchard.Forms.Services.DescribeContext;
-using MainBit.Alias.Descriptors;
 using MainBit.Alias.Elements;
 using MainBit.Alias.Services;
 using MainBit.Utility.Services;
 using MainBit.Alias.ViewModels;
+using Orchard.Layouts.Services;
 
 namespace Orchard.Layouts.Drivers {
     public class UrlSegmentElementDriver : FormsElementDriver<UrlSegment> {
@@ -28,11 +21,11 @@ namespace Orchard.Layouts.Drivers {
         private readonly IUrlService _urlService;
 
         public UrlSegmentElementDriver(
+            IFormsBasedElementServices formsServices,
             IUrlTemplateManager urlTemplateManager,
-            IFormManager formManager,
             ICurrentContentAccessor currentContentAccessor,
             IUrlService urlService)
-            : base(formManager) {
+            : base(formsServices) {
 
             _urlTemplateManager = urlTemplateManager;
             _currentContentAccessor = currentContentAccessor;
@@ -56,8 +49,13 @@ namespace Orchard.Layouts.Drivers {
             var viewModel = new UrlSegmentViewModel() {
                 Descriptor = segment
             };
+            context.ElementShape.ViewModel = viewModel;
 
-            foreach(var segmentValue in segment.Values) {
+            if (currentUrlContext == null) {
+                return;
+            }
+
+            foreach (var segmentValue in segment.Values) {
                 if (segmentValue.Name == currentUrlContext.Descriptor.Segments[segment.Name].Name)
                 {
                     viewModel.CurrentValue = new UrlSegmentValueDescriptorEntry {
@@ -82,8 +80,6 @@ namespace Orchard.Layouts.Drivers {
                     });
                 }
             }
-
-            context.ElementShape.ViewModel = viewModel;
         }
 
         protected override void DescribeForm(DescribeContext context) {
@@ -107,16 +103,6 @@ namespace Orchard.Layouts.Drivers {
 
                 return form;
             });
-        }
-
-        protected override void OnExporting(UrlSegment element, ExportElementContext context)
-        {
-            context.ExportableData["segmentName"] = element.SegmentName;
-        }
-
-        protected override void OnImporting(UrlSegment element, ImportElementContext context)
-        {
-            element.SegmentName = context.ExportableData.Get("SegmentName"); // XmlHelper.Parse<string>(context.ExportableData.Get("SegmentName"))
         }
     }
 }
