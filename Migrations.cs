@@ -43,6 +43,7 @@ namespace MainBit.Alias
 
             ContentDefinitionManager.AlterTypeDefinition("UrlSegmentWidget",
                 cfg => cfg
+                    .WithPart("IdentityPart")
                     .WithPart("CommonPart",
                         p => p
                             .WithSetting("OwnerEditorSettings.ShowOwnerEditor", "false")

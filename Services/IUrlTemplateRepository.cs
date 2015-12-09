@@ -13,6 +13,7 @@ namespace MainBit.Alias.Services
     {
         List<UrlTemplateRecord> GetList();
         UrlTemplateRecord Get(int id);
+        UrlTemplateRecord Get(string baseUrl);
         void Create(UrlTemplateRecord record);
         void Update(UrlTemplateRecord record);
         void Delete(UrlTemplateRecord record);
@@ -38,6 +39,11 @@ namespace MainBit.Alias.Services
         public UrlTemplateRecord Get(int id)
         {
             return _repository.Get(id);
+        }
+
+        public UrlTemplateRecord Get(string baseUrl)
+        {
+            return _repository.Table.FirstOrDefault(t => t.BaseUrl == baseUrl);
         }
 
         public void Create(UrlTemplateRecord record)

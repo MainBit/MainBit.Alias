@@ -13,6 +13,7 @@ namespace MainBit.Alias.Services
     {
         List<EnumUrlSegmentRecord> GetList();
         EnumUrlSegmentRecord Get(int id);
+        EnumUrlSegmentRecord Get(string name);
         void Create(EnumUrlSegmentRecord record);
         void Update(EnumUrlSegmentRecord record);
         void Delete(EnumUrlSegmentRecord record);
@@ -38,6 +39,11 @@ namespace MainBit.Alias.Services
         public EnumUrlSegmentRecord Get(int id)
         {
             return _repository.Get(id);
+        }
+
+        public EnumUrlSegmentRecord Get(string name)
+        {
+            return _repository.Table.FirstOrDefault(e => e.Name == name);
         }
 
         public void Create(EnumUrlSegmentRecord record)

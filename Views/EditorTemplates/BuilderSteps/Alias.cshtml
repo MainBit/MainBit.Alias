@@ -1,0 +1,11 @@
+﻿@model MainBit.Alias.ViewModels.AliasStepViewModel
+<div>
+    @Html.CheckBoxFor(m => m.ExportCustomUrlSegments)
+    @Html.LabelFor(m => m.ExportCustomUrlSegments, T("Custom Url Segments").ToString(), new {@class = "forcheckbox"})
+    @Html.Hint(T("Check this option to export custom url segments"))
+</div>
+<div>
+    @Html.CheckBoxFor(m => m.ExportUrlTemplates)
+    @Html.LabelFor(m => m.ExportUrlTemplates, T("Url Templates").ToString(), new { @class = "forcheckbox" })
+    @Html.Hint(T("Check this option to export url templates"))
+</div>
