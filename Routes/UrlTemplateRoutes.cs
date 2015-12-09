@@ -126,13 +126,13 @@ namespace MainBit.Alias.Routes
                 }
 
                 // Attempt to lookup RouteValues in the alias map
-                IDictionary<string, string> routeValues; //AliasInfo aliasInfo;
+                AliasInfo aliasInfo; //AliasInfo aliasInfo;
                 // TODO: Might as well have the lookup in AliasHolder...
-                if (_aliasMap.TryGetAlias(urlContext.StoredVirtualPath, out routeValues)) //if (_aliasMap.TryGetAlias(baseUrlContext.StoredVirtualPath, out aliasInfo))
+                if (_aliasMap.TryGetAlias(urlContext.StoredVirtualPath, out aliasInfo)) //if (_aliasMap.TryGetAlias(baseUrlContext.StoredVirtualPath, out aliasInfo))
                 {
                     // Construct RouteData from the route values
                     var data = new RouteData(this, _routeHandler);
-                    foreach (var routeValue in routeValues)  //foreach (var routeValue in aliasInfo.RouteValues)
+                    foreach (var routeValue in aliasInfo.RouteValues)  //foreach (var routeValue in aliasInfo.RouteValues)
                     {
                         var key = routeValue.Key;
                         if (key.EndsWith("-"))
