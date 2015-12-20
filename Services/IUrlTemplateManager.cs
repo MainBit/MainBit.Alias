@@ -122,9 +122,9 @@ namespace MainBit.Alias.Services
 
             foreach (var segmentValue in segment.Values)
             {
-                // default value can't be in url
-                if (segmentValue == segment.DefaultValue)
-                    continue;
+                // default value can't be in url - this behavor needs for the rpa-mu website ???
+                // if (segmentValue == segment.DefaultValue)
+                //    continue;
 
                 if (contraints.ContainsKey(segment.Name))
                     if (!contraints[segment.Name].IsMatch(segmentValue.Name))
