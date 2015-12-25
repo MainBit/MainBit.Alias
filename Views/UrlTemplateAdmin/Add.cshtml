@@ -28,7 +28,13 @@
         @Html.LabelFor(m => m.Constraints, T("Constraints"))
         @Html.TextBoxFor(m => m.Constraints, new { @class = "text large" })
         @Html.ValidationMessageFor(m => m.Constraints)
-        <span class="hint">@T("Regex constrains. Example: culture=\"^en-US$\",something=\"a|b\"")</span>
+        <span class="hint">@T("Regex constrains in json format, similar to MapRoute contraints. Example: {\"culture\"=\"^en-US$\",\"something\"=\"a|b\"}")</span>
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.IncludeDefaultValues, T("Include default vsalues"))
+        @Html.CheckBoxFor(m => m.IncludeDefaultValues)
+        @Html.ValidationMessageFor(m => m.IncludeDefaultValues)
+        <span class="hint">@T("")</span>
     </fieldset>
     <fieldset>
         <button class="primaryAction" type="submit">@T("Save")</button>

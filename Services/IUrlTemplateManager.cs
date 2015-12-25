@@ -1,6 +1,7 @@
 ﻿using MainBit.Alias.Descriptors;
 using Orchard;
 using Orchard.Caching;
+using Orchard.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,18 +22,21 @@ namespace MainBit.Alias.Services
         private readonly ICacheManager _cacheManager;
         private readonly ISignals _signals;
         private readonly IUrlTemplateHelper _urlTemplateHelper;
+        private readonly ITokenizer _tokenizer;
 
         public UrlTemplateManager(IEnumerable<IUrlSegmentProvider> urlSegmentProviders,
             IUrlTemplateRepository urlTemplateService,
             ICacheManager cacheManager,
             ISignals signals,
-            IUrlTemplateHelper urlTemplateHelper)
+            IUrlTemplateHelper urlTemplateHelper,
+            ITokenizer tokenizer)
         {
             _urlSegmentProviders = urlSegmentProviders;
             _urlTemplateService = urlTemplateService;
             _cacheManager = cacheManager;
             _signals = signals;
             _urlTemplateHelper = urlTemplateHelper;
+            _tokenizer = tokenizer;
         }
 
         public static readonly string SignalUrlTemplatesChanged = "MainBit.Alias.UrlTemplates.Changed";
@@ -89,7 +93,8 @@ namespace MainBit.Alias.Services
                     var templateDescriptors = GenerateSegmentsCombinations(
                         _urlTemplateHelper.ParseContraints(template.Constraints).ToDictionary(d => d.Key, d => new Regex(d.Value)),
                         new List<UrlTemplateDescriptor>() { templateDescriptor },
-                        definedSegmentDescriptors);
+                        definedSegmentDescriptors,
+                        template.IncludeDefaultValues);
                     allTemplateDescriptors.AddRange(templateDescriptors);
                 }
 
@@ -106,6 +111,12 @@ namespace MainBit.Alias.Services
                             segment.Value.StoredValue);
                     }
                 }
+
+                foreach(var templateDescriptor in allTemplateDescriptors)
+                {
+                    templateDescriptor.BaseUrl = _tokenizer.Replace(templateDescriptor.BaseUrl, null);
+                }
+
                 return allTemplateDescriptors;
             });
         }
@@ -113,7 +124,8 @@ namespace MainBit.Alias.Services
         private List<UrlTemplateDescriptor> GenerateSegmentsCombinations(
             IDictionary<string, Regex> contraints,
             List<UrlTemplateDescriptor> urlTemplateDescriptors,
-            IEnumerable<UrlSegmentDescriptor> segmentDescriptors)
+            IEnumerable<UrlSegmentDescriptor> segmentDescriptors,
+            bool includeDefaultValues)
         {
             var segment = segmentDescriptors.FirstOrDefault();
             if (segment == null) { return urlTemplateDescriptors; }
@@ -122,9 +134,8 @@ namespace MainBit.Alias.Services
 
             foreach (var segmentValue in segment.Values)
             {
-                // default value can't be in url - this behavor needs for the rpa-mu website ???
-                // if (segmentValue == segment.DefaultValue)
-                //    continue;
+                if(!includeDefaultValues && segmentValue == segment.DefaultValue)
+                    continue;
 
                 if (contraints.ContainsKey(segment.Name))
                     if (!contraints[segment.Name].IsMatch(segmentValue.Name))
@@ -139,7 +150,7 @@ namespace MainBit.Alias.Services
                 }
                 newUrlTemplateDescriptors.AddRange(clonedUrlTemplateDescriptors);
             }
-            return GenerateSegmentsCombinations(contraints, newUrlTemplateDescriptors, segmentDescriptors.Skip(1));
+            return GenerateSegmentsCombinations(contraints, newUrlTemplateDescriptors, segmentDescriptors.Skip(1), includeDefaultValues);
         }
 
         private void MonitorChanged(AcquireContext<string> acquire)

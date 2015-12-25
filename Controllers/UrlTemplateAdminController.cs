@@ -23,17 +23,20 @@ namespace MainBit.Alias.Controllers
         private readonly IOrchardServices _orchardServices;
         private readonly ISignals _signals;
         private readonly IUrlTemplateHelper _urlTemplateHelper;
+        private readonly IUrlTemplateManager _urlTemplateManager;
 
         public UrlTemplateAdminController(
             IUrlTemplateRepository urlTemplateService,
             IOrchardServices orchardServices,
             ISignals signals,
-            IUrlTemplateHelper urlTemplateHelper)
+            IUrlTemplateHelper urlTemplateHelper,
+            IUrlTemplateManager urlTemplateManager)
         {
             _urlTemplateService = urlTemplateService;
             _orchardServices = orchardServices;
             _signals = signals;
             _urlTemplateHelper = urlTemplateHelper;
+            _urlTemplateManager = urlTemplateManager;
 
             T = NullLocalizer.Instance;
         }
@@ -44,7 +47,9 @@ namespace MainBit.Alias.Controllers
         {
             var viewModel = new UrlTemplateIndexViewModel()
             {
-                Templates = _urlTemplateService.GetList()
+                Templates = _urlTemplateService.GetList(),
+                Descriptors = _urlTemplateManager.DescribeUrlTemplates()
+
             };
 
             return View(viewModel);

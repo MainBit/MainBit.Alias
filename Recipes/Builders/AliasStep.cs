@@ -107,7 +107,8 @@ namespace MainBit.Alias.Recipes.Builders {
                         new XAttribute("BaseUrl", template.BaseUrl),
                         new XAttribute("Position", template.Position),
                         new XAttribute("StoredPrefix", template.StoredPrefix ?? ""),
-                        new XAttribute("Constraints", template.Constraints ?? "")))));
+                        new XAttribute("Constraints", template.Constraints ?? ""),
+                        new XAttribute("IncludeDefaultValues", template.IncludeDefaultValues)))));
             }
         }
     }

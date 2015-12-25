@@ -80,6 +80,7 @@ namespace MainBit.Alias.Recipes.Executors {
                             template.Position = int.Parse(templateElement.Attribute("Position").Value);
                             template.StoredPrefix = templateElement.Attribute("StoredPrefix").Value;
                             template.Constraints = templateElement.Attribute("Constraints").Value;
+                            template.IncludeDefaultValues = bool.Parse(templateElement.Attribute("IncludeDefaultValues").Value);
                         }
                         catch (Exception ex)
                         {

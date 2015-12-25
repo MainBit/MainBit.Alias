@@ -9,5 +9,6 @@ namespace MainBit.Alias.ViewModels
     public class UrlTemplateIndexViewModel
     {
         public List<UrlTemplateRecord> Templates { get; set; }
+        public List<UrlTemplateDescriptor> Descriptors { get; set; }
     }
 }

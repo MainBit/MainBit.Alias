@@ -57,5 +57,13 @@ namespace MainBit.Alias
 
             return 6;
         }
+
+        public int UpdateFrom6()
+        {
+            SchemaBuilder.AlterTable("UrlTemplateRecord",
+                table => table.AddColumn<bool>("IncludeDefaultValues", c => c.WithLength(2048)));
+
+            return 7;
+        }
     }
 }
