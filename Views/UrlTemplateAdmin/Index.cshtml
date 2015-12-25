@@ -60,12 +60,15 @@
 </table>
 
 
-<h3>@T("Cache values")</h3>
-<table>
-    <tr>
-        <td>@T("Base url")</td>
-        <td>@T("Stored prefix")</td>
-    </tr>
+<h3 style="margin-top: 5rem;">@T("Result values (cached)")</h3>
+<table class="items">
+    <thead>
+        <tr>
+            <td>@T("Base url")</td>
+            <td>@T("Stored prefix")</td>
+        </tr>
+    </thead>
+    <tbody>
     @foreach (var descriptor in Model.Descriptors)
     {
         <tr>
@@ -73,4 +76,5 @@
             <td>@descriptor.StoredPrefix</td>
         </tr>
     }
+    </tbody>
 </table>
