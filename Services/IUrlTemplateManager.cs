@@ -108,7 +108,7 @@ namespace MainBit.Alias.Services
                     {
                         templateDescriptor.StoredPrefix = templateDescriptor.StoredPrefix.Replace(
                             string.Format("{{{0}}}", segment.Key),
-                            segment.Value.StoredValue);
+                            segment.Value.StoredPrefix);
                     }
                 }
 

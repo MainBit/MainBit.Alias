@@ -27,7 +27,7 @@ namespace MainBit.Alias.Descriptors
                 DisplayName = displayName,
                 Position = position,
                 Value = value,
-                StoredValue = storedValue
+                StoredPrefix = storedValue
             };
 
             SegmentValues.Add(segmentValue);

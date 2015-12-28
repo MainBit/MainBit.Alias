@@ -11,7 +11,7 @@ namespace MainBit.Alias.Descriptors
         public string DisplayName { get; set; }
         public int Position { get; set; }
         public string Value { get; set; }
-        public string StoredValue { get; set; }
+        public string StoredPrefix { get; set; }
 
         public UrlSegmentValueDescriptor TypedClone()
         {
@@ -35,7 +35,7 @@ namespace MainBit.Alias.Descriptors
                     new UrlSegmentValueDescriptor()
                     {
                         Value = values[i],
-                        StoredValue = storedValues.Length > i ? storedValues[i] : values[i]
+                        StoredPrefix = storedValues.Length > i ? storedValues[i] : values[i]
                     }
                 );
             }

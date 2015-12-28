@@ -19,7 +19,7 @@
         <span class="hint">@T("")</span>
     </fieldset>
     <fieldset>
-        @Html.LabelFor(m => m.StoredPrefix, T("Stored prefix template"))
+        @Html.LabelFor(m => m.StoredPrefix, T("Stored prefix"))
         @Html.TextBoxFor(m => m.StoredPrefix, new { @class = "text large" })
         @Html.ValidationMessageFor(m => m.StoredPrefix)
         <span class="hint">@T("")</span>

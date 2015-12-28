@@ -145,7 +145,7 @@ namespace MainBit.Alias.Services
 
             _urlContextEventHandler.Changing(changeUrlContext);
 
-            return GetContext(newSegments, changeUrlContext.NewDisplayVirtualPath);
+            return GetContext(newSegments, changeUrlContext.NewDisplayVirtualPath ?? urlContext.DisplayVirtualPath);
         }
 
         public bool IsUrlTemplatesConfigured()
@@ -162,6 +162,10 @@ namespace MainBit.Alias.Services
                 Logger.Debug(string.Format("Duplicate base url template for {0}", descriptors[0].BaseUrl));
             }
 
+            if(virtualPath.StartsWith("/"))
+            {
+                virtualPath = virtualPath.Substring(1);
+            }
             var desciptor = descriptors[0];
             var virtualPathSlashEnd = virtualPath + "/";
             if (!string.IsNullOrEmpty(desciptor.StoredPrefix)

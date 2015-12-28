@@ -34,8 +34,23 @@ msgstr "Базовый URL"
 
 #: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
 msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
-msgid "Stored virtual path"
-msgstr "Сохраненный относительный URL"
+msgid "Stored prefix"
+msgstr "Сохранаемый префикс"
+
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgid "Constraints"
+msgstr "Ограничения"
+
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgid "Stored prefix"
+msgstr "Сохранаемый префикс"
+
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgid "Include default values"
+msgstr "Включить значения по умолчанию"
 
 #: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
 msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
@@ -52,6 +67,12 @@ msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
 msgid "Clear сache"
 msgstr "Очистить кэш"
 
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Index.cshtml"
+msgid "Result URLs (cached)"
+msgstr "Результурующие URL-адреса (кэшированные)"
+
+
 
 
 
@@ -68,8 +89,18 @@ msgstr "Базовый URL"
 
 #: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Add.cshtml"
 msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Add.cshtml"
-msgid "Stored virtual path"
-msgstr "Сохраненный относительный URL"
+msgid "Stored prefix"
+msgstr "Сохранаемый префикс"
+
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Add.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Add.cshtml"
+msgid "Constraints"
+msgstr "Ограничения"
+
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Add.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Add.cshtml"
+msgid "Include default values"
+msgstr "Включить значения по умолчанию"
 
 
 
@@ -87,8 +118,18 @@ msgstr "Базовый URL"
 
 #: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Edit.cshtml"
 msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Edit.cshtml"
-msgid "Stored virtual path"
-msgstr "Сохраненный относительный URL"
+msgid "Stored prefix"
+msgstr "Сохранаемый префикс"
+
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Edit.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Edit.cshtml"
+msgid "Constraints"
+msgstr "Ограничения"
+
+#: "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Edit.cshtml"
+msgctxt "~/Modules/MainBit.Alias/Views/UrlTemplateAdmin/Edit.cshtml"
+msgid "Include default values"
+msgstr "Включить значения по умолчанию"
 
 
 
