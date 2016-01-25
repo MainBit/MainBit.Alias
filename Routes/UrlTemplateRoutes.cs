@@ -48,16 +48,12 @@ namespace MainBit.Alias.Routes
         {
             var allowInvalid = new[] {
                 "Admin",
-                "MainBit.Alias/UrlTemplateAdmin",
-                "MainBit.Alias/UrlTemplateAdmin/Index",
-                "MainBit.Alias/UrlTemplateAdmin/Add",
-                "MainBit.Alias/UrlTemplateAdmin/Delete",
                 "Users/Account/LogOff",
                 "Users/Account/LogOn",
                 "Users/Account/AccessDenied"
             };
             var allowInvalidStart = new[] {
-                "MainBit.Alias/UrlTemplateAdmin/Edit"
+                "MainBit.Alias/"
             };
 
             var virtualPath = httpContext.Request.AppRelativeCurrentExecutionFilePath.Substring(2) + httpContext.Request.PathInfo;
