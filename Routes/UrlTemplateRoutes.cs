@@ -12,6 +12,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using MainBit.Alias.Helpers;
 using MainBit.Alias.Descriptors;
+using Orchard.Logging;
 
 namespace MainBit.Alias.Routes
 {
@@ -20,9 +21,11 @@ namespace MainBit.Alias.Routes
         private readonly AliasMap _aliasMap;
         private readonly IRouteHandler _routeHandler;
         private readonly IWorkContextAccessor _workContextAccessor;
+        private readonly ILogger _logger;
 
         public UrlTemplateRoutes(
             IWorkContextAccessor workContextAccessor,
+            ILogger logger,
             IAliasHolder aliasHolder,
             string areaName,
             IRouteHandler routeHandler)
@@ -31,6 +34,7 @@ namespace MainBit.Alias.Routes
             _aliasMap = aliasHolder.GetMap(areaName);
             _routeHandler = routeHandler;
             _workContextAccessor = workContextAccessor;
+            _logger = logger;
         }
 
         public static readonly string BaseUrlInvalid = "MainBitBaseUrlInvalid";

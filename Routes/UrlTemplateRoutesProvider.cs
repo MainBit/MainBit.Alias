@@ -2,6 +2,7 @@
 using Orchard;
 using Orchard.Alias.Implementation.Holder;
 using Orchard.Environment.ShellBuilders.Models;
+using Orchard.Logging;
 using Orchard.Mvc.Routes;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,11 @@ namespace MainBit.Alias.Routes
             _baseUrlManager = baseUrlManager;
             _blueprint = blueprint;
             _aliasHolder = aliasHolder;
+
+            Logger = NullLogger.Instance;
         }
+
+        public ILogger Logger { get; set; }
 
         public void GetRoutes(ICollection<RouteDescriptor> routes) {
             foreach (RouteDescriptor routeDescriptor in GetRoutes()) {
@@ -43,7 +48,7 @@ namespace MainBit.Alias.Routes
             return distinctAreaNames.Select(areaName =>
                 new RouteDescriptor {
                     Priority = 100,
-                    Route = new UrlTemplateRoutes(_wca, _aliasHolder, areaName, new MvcRouteHandler())
+                    Route = new UrlTemplateRoutes(_wca, Logger, _aliasHolder, areaName, new MvcRouteHandler())
                 }).ToList();
         }
     }
